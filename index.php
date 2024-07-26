@@ -6,10 +6,24 @@
 <head>
 	<title>multi-user role-based-login-system</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+	<style>
+	    .logo-container {
+	        display: flex;
+	        justify-content: center;
+	        margin-bottom: 2rem;
+	    }
+	    .logo {
+	        width: 200px; /* Adjust as needed to be smaller than the form */
+	    }
+	</style>
 </head>
 <body>
-      <div class="container d-flex justify-content-center align-items-center"
+      <div class="container d-flex flex-column justify-content-center align-items-center"
       style="min-height: 100vh">
+          <!-- Logo Image Container -->
+          <div class="logo-container">
+              <img src="img/adotech.png" alt="Logo" class="logo">
+          </div>
       	<form class="border shadow p-3 rounded"
       	      action="php/check-login.php" 
       	      method="post" 
