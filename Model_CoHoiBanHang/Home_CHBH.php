@@ -49,7 +49,7 @@
             text-align: left;
         }
         th {
-            background-color: #4CAF50;
+            background-color: #4F94CD;
             color: white;
         }
         tr:nth-child(even) {
@@ -59,7 +59,7 @@
             background-color: #ddd;
         }
         .header {
-            background-color: #4CAF50;
+            background-color: #B0E0E6;
             color: white;
             text-align: center;
             padding: 10px;
@@ -67,7 +67,7 @@
             border-radius: 5px;
         }
         .button {
-            background-color: #4CAF50;
+            background-color: #B0E0E6;
             color: white;
             border: none;
             padding: 10px 20px;
