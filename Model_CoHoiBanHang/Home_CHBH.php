@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Thêm liên kết tới Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Quản lý Khách Hàng</title>
 
@@ -14,7 +16,8 @@
             padding: 0;
             background-color: #f4f4f4;
             display: flex;
-            overflow: hidden; /* Ngăn không cho cuộn trang chính khi modal mở */
+            overflow: hidden;
+            /* Ngăn không cho cuộn trang chính khi modal mở */
         }
 
         .container {
@@ -24,7 +27,8 @@
             gap: 20px;
             padding: 20px;
             box-sizing: border-box;
-            overflow: hidden; /* Đảm bảo không có cuộn dọc trong phần chính */
+            overflow: hidden;
+            /* Đảm bảo không có cuộn dọc trong phần chính */
         }
 
         .content {
@@ -153,7 +157,8 @@
 
         .modal-content {
             background-color: #fefefe;
-            margin: 10% auto; /* Đặt margin cho modal-content để căn giữa modal */
+            margin: 10% auto;
+            /* Đặt margin cho modal-content để căn giữa modal */
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
@@ -173,6 +178,248 @@
         .close:focus {
             color: black;
             text-decoration: none;
+            cursor: pointer;
+        }
+
+        .action-buttons {
+            display: none;
+            margin-left: 10px;
+        }
+
+        .data-row:hover .action-buttons {
+            display: inline-block;
+        }
+
+        .action-button {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+
+        .action-button.edit {
+            background-color: #4caf50;
+        }
+
+        .upload-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .upload-modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .upload-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .upload-close:hover,
+        .upload-close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .upload-form input[type="file"] {
+            margin-bottom: 20px;
+        }
+
+        /* Modal container */
+        .upload-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Modal content */
+        .upload-modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 40%;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s;
+        }
+
+        /* Close button */
+        .upload-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .upload-close:hover,
+        .upload-close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Form styles */
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .upload-form label {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .upload-form input[type="file"] {
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .upload-form input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-form input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Thêm CSS cho modal và thông báo */
+        .upload-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .upload-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .upload-close:hover,
+        .upload-close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .upload-form input[type="file"] {
+            margin: 10px 0;
+        }
+
+        .alert {
+            background-color: #f44336;
+            color: white;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .alert.success {
+            background-color: #4CAF50;
+        }
+
+
+        /* xuất dữ liệu */
+        /* Style cho nút và menu thả xuống */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {background-color: #f1f1f1}
+        .dropdown:hover .dropdown-content {display: block;}
+        .dropdown:hover .dropbtn {background-color: #3e8e41;}
+        .dropbtn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            font-size: 16px;
+            border: none;
             cursor: pointer;
         }
     </style>
@@ -196,25 +443,32 @@
                 </p>
                 <div id="submenu" class="submenu">
                     <p><a href="javascript:void(0);" id="list-opportunities" style="text-decoration: none; color: black; height: 20px; margin-left: 30px;">Danh Sách Cơ Hội</a></p>
-                    <p><a href="care_schedule.php" style="text-decoration: none; color: black; height: 40px; margin-left: 30px;">Lịch Chăm Sóc</a></p>
+                    <p><a href="#" style="text-decoration: none; color: black; height: 40px; margin-left: 30px;">Lịch Chăm Sóc</a></p>
                 </div>
             </div>
         </div>
 
         <!-- Content: Bảng Danh -->
-        <div class="content" id="data-container" style="display: none;">
+        <!-- <div class="content" id="data-container" style="display: none;"> -->
+        <div class="content">
 
             <!-- Nút nằm ngang -->
             <div class="button-container">
                 <button class="button" onclick="showModal()">
                     <i class="fas fa-plus"></i> Thêm Mới
                 </button>
-                <button class="button">
+                <button class="button" onclick="showUploadModal()">
                     <i class="fas fa-upload"></i> Nhập Từ File
                 </button>
-                <button class="button">
+
+                <button class="button" onclick="window.location.href='export_csv.php';">
                     <i class="fas fa-file-export"></i> Xuất Excel
                 </button>
+
+                <button class="button" onclick="printPage(); return false;">
+                    <i class="fas fa-print"></i> In Dữ Liệu
+                </button>
+
                 <button class="button">
                     <i class="fas fa-chart-bar"></i> Biểu Đồ
                 </button>
@@ -260,9 +514,12 @@
                     // Lặp qua từng dòng kết quả
                     $stt = 1;
                     while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
+                        echo "<tr class='data-row'>";
                         echo "<td>" . $stt++ . "</td>";
-                        echo "<td>" . $row["Ten"] . "</td>";
+                        echo "<td>" . $row["Ten"] . "<span class='action-buttons'>
+                <button class='action-button delete' data-id='" . $row["Id_KHCH"] . "'>Xóa</button>
+                <button class='action-button edit' data-id='" . $row["Id_KHCH"] . "'>Chỉnh sửa</button>
+              </span></td>";
                         echo "<td>" . $row["TenCongTy"] . "</td>";
                         echo "<td>" . $row["Email"] . "</td>";
                         echo "<td>" . $row["Phone"] . "</td>";
@@ -285,7 +542,99 @@
         </div>
     </div>
 
+    <!-- Modal tải lên tệp -->
+    <div id="uploadModal" class="upload-modal">
+        <div class="upload-modal-content">
+            <span class="upload-close" onclick="closeUploadModal()">&times;</span>
+            <form id="uploadForm" class="upload-form" enctype="multipart/form-data">
+                <label for="fileToUpload">Chọn tệp để tải lên:</label>
+                <input type="file" name="fileToUpload" id="fileToUpload" required>
+                <input type="submit" value="Tải lên Tệp">
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
+
+
+        /*Xuất file */
+        function exportData(type) {
+            let url = 'export.php?export=' + type;
+            if (type === 'print') {
+                window.open(url, '_blank');
+            } else {
+                window.location.href = url;
+            }
+        }
+
+        function printPage() {
+            window.print();
+        }
+
+
+
+        function showUploadModal() {
+            document.getElementById('uploadModal').style.display = 'flex';
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').style.display = 'none';
+        }
+
+        $(document).ready(function() {
+            $('#uploadForm').on('submit', function(event) {
+                event.preventDefault(); // Ngăn chặn gửi form theo cách truyền thống
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: 'upload_file.php',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        var result = JSON.parse(response);
+                        if (result.status === 'success') {
+                            toastr.success(result.message);
+                        } else {
+                            toastr.error(result.message);
+                        }
+                        // Đóng modal và quay lại trang chủ sau một thời gian ngắn
+                        setTimeout(function() {
+                            closeUploadModal();
+                            location.reload(); // Tải lại trang để cập nhật dữ liệu
+                        }, 2000);
+                    },
+                    error: function() {
+                        toastr.error('Đã xảy ra lỗi khi gửi yêu cầu.');
+                    }
+                });
+            });
+        });
+        // Toastr options
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "preventDuplicates": true,
+            "positionClass": "toast-top-right", // Bạn có thể thay đổi vị trí nếu muốn
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+
         function toggleSubMenu() {
             var submenu = document.getElementById('submenu');
             var icon = document.getElementById('toggle-icon');
@@ -333,6 +682,59 @@
         function closeModal() {
             document.getElementById('form-modal').style.display = 'none';
             document.body.style.overflow = ''; // Khôi phục khả năng cuộn trang chính
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Xóa dữ liệu
+            document.querySelectorAll('.action-button.delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    var id = this.getAttribute('data-id');
+                    if (confirm('Bạn có chắc chắn muốn xóa không?')) {
+                        // Gửi yêu cầu xóa đến server
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('POST', 'Delete_CoHoi.php', true);
+                        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                        xhr.onload = function() {
+                            if (xhr.status === 200) {
+                                alert('Xóa thành công!');
+                                location.reload(); // Tải lại trang sau khi xóa
+                            } else {
+                                alert('Lỗi khi xóa!');
+                            }
+                        };
+                        xhr.send('id=' + id);
+                    }
+                });
+            });
+
+            // Chỉnh sửa dữ liệu
+            document.querySelectorAll('.action-button.edit').forEach(button => {
+                button.addEventListener('click', function() {
+                    var id = this.getAttribute('data-id');
+                    // Hiển thị form chỉnh sửa
+                    var modal = document.getElementById('form-modal');
+                    var formContent = document.getElementById('form-content');
+
+                    modal.style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', 'Detail_CH.php?id=' + id, true);
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            formContent.innerHTML = xhr.responseText;
+                        } else {
+                            formContent.innerHTML = 'Lỗi tải nội dung.';
+                        }
+                    };
+                    xhr.send();
+                });
+            });
+        });
+
+
+        function closeUploadModal() {
+            document.getElementById("uploadModal").style.display = "none";
         }
     </script>
 
