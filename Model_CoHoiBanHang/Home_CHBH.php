@@ -397,23 +397,35 @@
             position: relative;
             display: inline-block;
         }
+
         .dropdown-content {
             display: none;
             position: absolute;
             background-color: #f9f9f9;
             min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
             z-index: 1;
         }
+
         .dropdown-content a {
             color: black;
             padding: 12px 16px;
             text-decoration: none;
             display: block;
         }
-        .dropdown-content a:hover {background-color: #f1f1f1}
-        .dropdown:hover .dropdown-content {display: block;}
-        .dropdown:hover .dropbtn {background-color: #3e8e41;}
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #3e8e41;
+        }
+
         .dropbtn {
             background-color: #4CAF50;
             color: white;
@@ -421,6 +433,19 @@
             font-size: 16px;
             border: none;
             cursor: pointer;
+        }
+
+        /* Check dữ lieu ten khi click vao ten ở bảng khachhangch */
+        .customer-link {
+            color: black;
+            /* Màu chữ đen */
+            text-decoration: none;
+            /* Không gạch dưới */
+        }
+
+        .customer-link:hover {
+            text-decoration: underline;
+            /* Gạch dưới khi hover (tuỳ chọn) */
         }
     </style>
 </head>
@@ -468,6 +493,7 @@
                 <button class="button" onclick="printPage(); return false;">
                     <i class="fas fa-print"></i> In Dữ Liệu
                 </button>
+                <iframe id="print-frame" style="display:none;" src=""></iframe>
 
                 <button class="button">
                     <i class="fas fa-chart-bar"></i> Biểu Đồ
@@ -513,13 +539,16 @@
 
                     // Lặp qua từng dòng kết quả
                     $stt = 1;
+                    // Đoạn mã PHP lấy dữ liệu từ cơ sở dữ liệu...
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr class='data-row'>";
                         echo "<td>" . $stt++ . "</td>";
-                        echo "<td>" . $row["Ten"] . "<span class='action-buttons'>
+                        echo "<td><a href='Check_Cohoi.php?id=" . $row["Id_KHCH"] . "' class='customer-link'>" . $row["Ten"] . "</a>
+            <span class='action-buttons'>
                 <button class='action-button delete' data-id='" . $row["Id_KHCH"] . "'>Xóa</button>
                 <button class='action-button edit' data-id='" . $row["Id_KHCH"] . "'>Chỉnh sửa</button>
-              </span></td>";
+            </span>
+          </td>";
                         echo "<td>" . $row["TenCongTy"] . "</td>";
                         echo "<td>" . $row["Email"] . "</td>";
                         echo "<td>" . $row["Phone"] . "</td>";
@@ -561,8 +590,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <script>
-
-
         /*Xuất file */
         function exportData(type) {
             let url = 'export.php?export=' + type;
@@ -573,8 +600,13 @@
             }
         }
 
+
         function printPage() {
-            window.print();
+            var frame = document.getElementById('print-frame');
+            frame.src = 'print_report.php'; // Đặt URL của trang in
+            frame.onload = function() {
+                frame.contentWindow.print(); // Gọi hàm in của frame khi tải xong
+            };
         }
 
 
