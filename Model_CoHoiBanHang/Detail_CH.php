@@ -153,15 +153,38 @@ if ($result->num_rows > 0) {
                 </div>
                 <div class="form-group">
                     <label for="nguoiphutrach">Người Phụ Trách:</label>
-                    <input type="text" id="nguoiphutrach" name="nguoiphutrach" value="<?php echo $row['NguoiPhuTrach']; ?>">
+                    <select id="nguoiphutrach" name="nguoiphutrach">
+                        <?php
+                        // Lấy dữ liệu từ bảng nhanvien
+                        $sql_nv = "SELECT Id_NhanVien , HovaTen FROM nhanvien";
+                        $result_nv = $conn->query($sql_nv);
+
+                        if ($result_nv->num_rows > 0) {
+                            while($row_nv = $result_nv->fetch_assoc()) {
+                                $selected = $row['NguoiPhuTrach'] == $row_nv['HovaTen'] ? 'selected' : '';
+                                echo "<option value='" . $row_nv['HovaTen'] . "' $selected>" . $row_nv['HovaTen'] . "</option>";
+                            }
+                        } else {
+                            echo "<option value=''>Không có nhân viên</option>";
+                        }
+                        ?>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="tinhtrang">Tình Trạng:</label>
-                    <input type="text" id="tinhtrang" name="tinhtrang" value="<?php echo $row['TinhTrang']; ?>" required>
+                    <select id="tinhtrang" name="tinhtrang">
+                        <option value="Tiềm năng" <?php echo ($row['TinhTrang'] == 'Tiềm năng') ? 'selected' : ''; ?>>Tiềm năng</option>
+                        <option value="Đang xử lý" <?php echo ($row['TinhTrang'] == 'Đang xử lý') ? 'selected' : ''; ?>>Đang xử lý</option>
+                        <option value="Hoàn thành" <?php echo ($row['TinhTrang'] == 'Hoàn thành') ? 'selected' : ''; ?>>Hoàn thành</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="nguoncohoi">Nguồn Cơ Hội:</label>
-                    <input type="text" id="nguoncohoi" name="nguoncohoi" value="<?php echo $row['NguonCoHoi']; ?>" required>
+                    <select id="nguoncohoi" name="nguoncohoi">
+                        <option value="Quảng cáo" <?php echo ($row['NguonCoHoi'] == 'Quảng cáo') ? 'selected' : ''; ?>>Quảng cáo</option>
+                        <option value="Khách hàng giới thiệu" <?php echo ($row['NguonCoHoi'] == 'Khách hàng giới thiệu') ? 'selected' : ''; ?>>Khách hàng giới thiệu</option>
+                        <option value="Trực tiếp" <?php echo ($row['NguonCoHoi'] == 'Trực tiếp') ? 'selected' : ''; ?>>Trực tiếp</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="ngaylienhe">Ngày Liên Hệ:</label>
@@ -173,7 +196,11 @@ if ($result->num_rows > 0) {
                 </div>
                 <div class="form-group">
                     <label for="khuvuc">Khu Vực:</label>
-                    <input type="text" id="khuvuc" name="khuvuc" value="<?php echo $row['KhuVuc']; ?>" required>
+                    <select id="khuvuc" name="khuvuc">
+                        <option value="Miền Bắc" <?php echo ($row['KhuVuc'] == 'Miền Bắc') ? 'selected' : ''; ?>>Miền Bắc</option>
+                        <option value="Miền Trung" <?php echo ($row['KhuVuc'] == 'Miền Trung') ? 'selected' : ''; ?>>Miền Trung</option>
+                        <option value="Miền Nam" <?php echo ($row['KhuVuc'] == 'Miền Nam') ? 'selected' : ''; ?>>Miền Nam</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="giadukien">Giá Dự Kiến:</label>

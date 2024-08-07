@@ -1,10 +1,11 @@
 <?php
 // Kết nối cơ sở dữ liệu
-$servername = 'localhost';
-$username = 'root';
-$password = '';
-$dbname = 'db_crm';
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "db_crm";
 
+// Tạo kết nối
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Kiểm tra kết nối
@@ -13,35 +14,52 @@ if ($conn->connect_error) {
 }
 
 // Lấy dữ liệu từ form
-$ten = $_POST['name'];
-$tenCongTy = $_POST['company'];
+$name = $_POST['name'];
+$company = $_POST['company'];
 $email = $_POST['email'];
 $phone = $_POST['phone'];
-$chucVu = $_POST['chucvu'];
-$diaChi = $_POST['diachi'];
-$nguoiPhuTrach = $_POST['nguoiphutrach'];
-$tinhTrang = $_POST['tinhtrang'];
-$nguonCoHoi = $_POST['nguoncohoi'];
-$ngayLienHe = $_POST['ngaylienhe'];
+$chucvu = $_POST['chucvu'];
+$diachi = $_POST['diachi'];
+$nguoiphutrach_id = $_POST['nguoiphutrach']; // Lưu Id_NhanVien vào cơ sở dữ liệu
+$tinhtrang = $_POST['tinhtrang'];
+$nguoncohoi = $_POST['nguoncohoi'];
+$ngaylienhe = $_POST['ngaylienhe'];
 $website = $_POST['website'];
-$khuVuc = $_POST['khuvuc'];
-$giaDuKien = $_POST['giadukien'];
-$ngayChotDuKien = $_POST['ngaychotdukien'];
-$moTa = $_POST['mota'];
+$khuvuc = $_POST['khuvuc'];
+$giadukien = $_POST['giadukien'];
+$ngaychotdukien = $_POST['ngaychotdukien'];
+$mota = $_POST['mota'];
 
-// Chèn dữ liệu vào bảng khachhangch
+// Tìm HovaTen dựa trên Id_NhanVien
+$sql = "SELECT HovaTen FROM nhanvien WHERE Id_NhanVien = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $nguoiphutrach_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $nguoiphutrach = $row['HovaTen']; // Lưu HovaTen vào biến
+} else {
+    die("Không tìm thấy nhân viên");
+}
+
+// Thêm dữ liệu vào bảng khachhangch
 $sql = "INSERT INTO khachhangch (Ten, TenCongTy, Email, Phone, ChucVu, DiaChi, NguoiPhuTrach, TinhTrang, NguonCoHoi, NgayLienHe, Website, KhuVuc, GiaDuKien, NgayChotDuKien, MoTa)
-        VALUES ('$ten', '$tenCongTy', '$email', '$phone', '$chucVu', '$diaChi', '$nguoiPhuTrach', '$tinhTrang', '$nguonCoHoi', '$ngayLienHe', '$website', '$khuVuc', '$giaDuKien', '$ngayChotDuKien', '$moTa')";
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-if ($conn->query($sql) === TRUE) {
-    echo "Thêm mới thành công!";
-    // Chuyển hướng về trang Home_CHBH sau khi thêm thành công
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("sssssssssssssss", $name, $company, $email, $phone, $chucvu, $diachi, $nguoiphutrach, $tinhtrang, $nguoncohoi, $ngaylienhe, $website, $khuvuc, $giadukien, $ngaychotdukien, $mota);
+
+if ($stmt->execute()) {
+    echo "Thêm khách hàng thành công!";
+    // Chuyển hướng về trang Home_CHBH sau khi thêm thành công 
     header("Location: Home_CHBH.php");
     exit();
 } else {
-    echo "Lỗi: " . $sql . "<br>" . $conn->error;
+    echo "Lỗi: " . $stmt->error;
 }
 
 // Đóng kết nối
+$stmt->close();
 $conn->close();
-?>

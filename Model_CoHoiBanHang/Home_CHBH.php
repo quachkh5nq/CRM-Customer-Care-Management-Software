@@ -7,7 +7,7 @@
     <!-- Thêm liên kết tới Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Quản lý Khách Hàng</title>
+    <title>Cơ Hội Bán Hàng</title>
 
     <style>
         body {
@@ -465,10 +465,11 @@
                         Cơ Hội Bán Hàng
                         <i id="toggle-icon" class="fas fa-chevron-right toggle-icon" style="width: 10px; height: 10px; margin-left: 65px;"></i>
                     </a>
+                    
                 </p>
                 <div id="submenu" class="submenu">
                     <p><a href="javascript:void(0);" id="list-opportunities" style="text-decoration: none; color: black; height: 20px; margin-left: 30px;">Danh Sách Cơ Hội</a></p>
-                    <p><a href="#" style="text-decoration: none; color: black; height: 40px; margin-left: 30px;">Lịch Chăm Sóc</a></p>
+                    <p><a href="Home_LichCSKH.php" style="text-decoration: none; color: black; height: 40px; margin-left: 30px;">Lịch Chăm Sóc</a></p>
                 </div>
             </div>
         </div>
@@ -503,7 +504,7 @@
             <!-- Container cho bảng dữ liệu -->
             <div>
                 <?php
-                // Thông tin kết nối cơ sở dữ lsệu
+                // Thông tin kết nối cơ sở dữ liệu
                 $servername = 'localhost';
                 $username = 'root';
                 $password = '';
@@ -517,38 +518,41 @@
                     die("Kết nối thất bại: " . $conn->connect_error);
                 }
 
-                // Truy vấn dữ liệu từ bảng khachhangch
-                $sql = "SELECT Id_KHCH, Ten, TenCongTy, Email, Phone, NguoiPhuTrach, TinhTrang, NguonCoHoi, NgayLienHe, Website, KhuVuc, GiaDuKien, NgayChotDuKien, MoTa FROM khachhangch";
+                // Truy vấn dữ liệu từ bảng khachhangch và nhanvien
+                $sql = "SELECT khachhangch.Id_KHCH, khachhangch.Ten, khachhangch.TenCongTy, khachhangch.Email, khachhangch.Phone, 
+               nhanvien.HovaTen AS NguoiPhuTrach, khachhangch.TinhTrang, khachhangch.NguonCoHoi, khachhangch.NgayLienHe, 
+               khachhangch.KhuVuc, khachhangch.GiaDuKien, khachhangch.NgayChotDuKien, khachhangch.MoTa
+        FROM khachhangch 
+        LEFT JOIN nhanvien ON khachhangch.NguoiPhuTrach = nhanvien.HovaTen";
                 $result = $conn->query($sql);
 
                 // Kiểm tra và hiển thị dữ liệu
                 if ($result->num_rows > 0) {
                     echo "<table>";
                     echo "<tr>
-                            <th>STT</th>
-                            <th>Tên</th>
-                            <th>Tên Công Ty</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Người Phụ Trách</th>
-                            <th>Tình Trạng</th>
-                            <th>Nguồn Cơ Hội</th>
-                            <th>Liên Hệ</th>
-                            <th>Khu Vực</th>
-                        </tr>";
+            <th>STT</th>
+            <th>Tên</th>
+            <th>Tên Công Ty</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Phụ Trách</th>
+            <th>Tình Trạng</th>
+            <th>Nguồn</th>
+            <th>Liên Hệ</th>
+            <th>Khu Vực</th>
+        </tr>";
 
                     // Lặp qua từng dòng kết quả
                     $stt = 1;
-                    // Đoạn mã PHP lấy dữ liệu từ cơ sở dữ liệu...
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr class='data-row'>";
                         echo "<td>" . $stt++ . "</td>";
                         echo "<td><a href='Check_Cohoi.php?id=" . $row["Id_KHCH"] . "' class='customer-link'>" . $row["Ten"] . "</a>
-            <span class='action-buttons'>
-                <button class='action-button delete' data-id='" . $row["Id_KHCH"] . "'>Xóa</button>
-                <button class='action-button edit' data-id='" . $row["Id_KHCH"] . "'>Chỉnh sửa</button>
-            </span>
-          </td>";
+                <span class='action-buttons'>
+                    <button class='action-button delete' data-id='" . $row["Id_KHCH"] . "'>Xóa</button>
+                    <button class='action-button edit' data-id='" . $row["Id_KHCH"] . "'>Chỉnh sửa</button>
+                </span>
+              </td>";
                         echo "<td>" . $row["TenCongTy"] . "</td>";
                         echo "<td>" . $row["Email"] . "</td>";
                         echo "<td>" . $row["Phone"] . "</td>";
@@ -567,6 +571,7 @@
                 // Đóng kết nối
                 $conn->close();
                 ?>
+
             </div>
         </div>
     </div>
