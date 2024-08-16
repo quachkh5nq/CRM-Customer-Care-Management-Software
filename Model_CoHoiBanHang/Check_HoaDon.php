@@ -25,6 +25,14 @@
         .table td, .table th {
             vertical-align: middle;
         }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -66,6 +74,8 @@
                         <p><strong>Ngày Thanh Toán:</strong> " . $row_invoice["NgayThanhToan"] . "</p>
                         <p><strong>Ngày Hết Hạn:</strong> " . $row_invoice["NgayHetHan"] . "</p>
                         <p><strong>Tình Trạng:</strong> " . $row_invoice["TinhTrang"] . "</p>
+                        <!-- Nút Mua Sản Phẩm -->
+                        <a href='buy_product.php?id=" . $row_invoice["Id_HoaDon"] . "' class='btn btn-custom'>Mua Sản Phẩm</a>
                     </div>
                 </div>";
 
