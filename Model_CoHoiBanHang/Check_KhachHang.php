@@ -328,56 +328,171 @@
                 </table>
             </div>
 
-            <div id="invoice" class="section hidden">
-                <h2>Hóa Ðon</h2>
-                <p>Thông tin hóa don s? du?c hi?n th? ? dây.</p>
+
+
+            <div id="invoice" class="section">
+                <h2>Hóa Đơn</h2>
+                <!-- Button để hiển thị form thêm mới hóa đơn -->
+                <button onclick="showAddInvoiceForm()" class="btn btn-primary mb-3">Thêm Mới Hóa Đơn</button>
+
+                <!-- Form thêm mới hóa đơn -->
+                <div id="add-invoice-form" style="display:none;">
+                    <h3>Thêm Mới Hóa Đơn</h3>
+                    <form action="add_invoice.php" method="post" onsubmit="return validateForm()">
+                        <input type="hidden" name="Id_khachhang" id="Id_khachhang" value="<?php echo $id; ?>">
+
+                        <div class="form-group">
+                            <label for="NguoiLapHoaDon">Người Lập Hóa Đơn:</label>
+                            <select name="NguoiLapHoaDon" id="NguoiLapHoaDon" class="form-control" required>
+                                <?php
+                                // Kết nối cơ sở dữ liệu và lấy danh sách nhân viên
+                                $conn = new mysqli($servername, $username, $password, $dbname);
+                                $sql_nv = "SELECT HovaTen FROM nhanvien";
+                                $result_nv = $conn->query($sql_nv);
+
+                                if ($result_nv->num_rows > 0) {
+                                    while ($row_nv = $result_nv->fetch_assoc()) {
+                                        echo "<option value='" . $row_nv['HovaTen'] . "'>" . $row_nv['HovaTen'] . "</option>";
+                                    }
+                                }
+                                $conn->close();
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="NgayThanhToan">Ngày Thanh Toán:</label>
+                            <input type="date" name="NgayThanhToan" id="NgayThanhToan" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="NgayHetHan">Ngày Hết Hạn:</label>
+                            <input type="date" name="NgayHetHan" id="NgayHetHan" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="TinhTrang">Tình Trạng:</label>
+                            <select name="TinhTrang" id="TinhTrang" class="form-control" required>
+                                <option value="Chưa thanh toán">Chưa thanh toán</option>
+                                <option value="Đã thanh toán">Đã thanh toán</option>
+                                <option value="Thanh toán 50%">Thanh toán 50%</option>
+                                <option value="Thanh toán 70%">Thanh toán 70%</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Lưu</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideAddInvoiceForm()">Hủy</button>
+                    </form>
+                </div>
+
+                <?php
+                // Kết nối cơ sở dữ liệu
+                $servername = 'localhost';
+                $username = 'root';
+                $password = '';
+                $dbname = 'db_crm';
+
+                // Tạo kết nối
+                $conn = new mysqli($servername, $username, $password, $dbname);
+
+                // Kiểm tra kết nối
+                if ($conn->connect_error) {
+                    die("Kết nối thất bại: " . $conn->connect_error);
+                }
+
+                // Lấy Id_khachhang từ URL
+                $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+                // Truy vấn hóa đơn từ bảng hoadon
+                $sql_invoice = "SELECT Id_HoaDon, Id_khachhang, MaHoaDon, NguoiLapHoaDon, NgayThanhToan, NgayHetHan, TinhTrang 
+        FROM hoadon 
+        WHERE Id_khachhang = $id";
+                $result_invoice = $conn->query($sql_invoice);
+
+                // Kiểm tra và in ra dữ liệu hóa đơn
+                if ($result_invoice->num_rows > 0) {
+                    echo "<table class='table table-hover'>
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã Hóa Đơn</th>
+                        <th>Người Lập Hóa Đơn</th>
+                        <th>Ngày Thanh Toán</th>
+                        <th>Ngày Hết Hạn</th>
+                        <th>Tình Trạng</th>
+                        <th>Tùy Chỉnh</th>
+                    </tr>
+                </thead>
+                <tbody>";
+                    $stt = 1;
+                    while ($row_invoice = $result_invoice->fetch_assoc()) {
+                        echo "<tr onclick=\"viewInvoiceDetails(" . $row_invoice['Id_HoaDon'] . ")\">
+                    <td>" . $stt . "</td>
+                    <td class='clickable' onclick=\"viewInvoiceDetails(" . $row_invoice['Id_HoaDon'] . ")\">" . $row_invoice["MaHoaDon"] . "</td>
+                    <td>" . $row_invoice["NguoiLapHoaDon"] . "</td>
+                    <td>" . $row_invoice["NgayThanhToan"] . "</td>
+                    <td>" . $row_invoice["NgayHetHan"] . "</td>
+                    <td>" . $row_invoice["TinhTrang"] . "</td>
+                    <td>
+                        <button onclick=\"editInvoice(" . $row_invoice['Id_HoaDon'] . ", event)\" class='btn btn-warning btn-sm'>Chỉnh sửa</button>
+                        <button onclick=\"deleteInvoice(" . $row_invoice['Id_HoaDon'] . ", event)\" class='btn btn-danger btn-sm'>Xóa</button>
+                    </td>
+                </tr>";
+                        $stt++;
+                    }
+                    echo "</tbody>
+            </table>";
+                } else {
+                    echo "Không có hóa đơn nào.";
+                }
+
+                // Đóng kết nối
+                $conn->close();
+                ?>
             </div>
+
 
             <div id="merge" class="section hidden">
-                <h2>H?p Ð?ng</h2>
-                <p>Thông tin h?p d?ng s? du?c hi?n th? ? dây.</p>
+                <h2>Hợp Ðồng</h2>
+                <p>Chức năng này đang được phát triển.</p>
             </div>
 
-            <div id="support" class="section hidden">
-                <h2>H? Tr?</h2>
-                <p>Thông tin h?p d?ng s? du?c hi?n th? ? dây.</p>
-            </div>
         </div>
-    </div>
 
-    <script>
-        function showSection(sectionId, element) {
-            // ?n t?t c? các ph?n
-            document.querySelectorAll('.section').forEach(function(section) {
-                section.classList.add('hidden');
-            });
 
-            // ?n t?t c? các tiêu d? bên trái
-            document.querySelectorAll('.left-column h3').forEach(function(header) {
-                header.classList.remove('selected');
-            });
+        <script>
+            function showSection(sectionId, element) {
+                // ?n t?t c? các ph?n
+                document.querySelectorAll('.section').forEach(function(section) {
+                    section.classList.add('hidden');
+                });
 
-            // Hi?n th? ph?n du?c ch?n
-            document.getElementById(sectionId).classList.remove('hidden');
+                // ?n t?t c? các tiêu d? bên trái
+                document.querySelectorAll('.left-column h3').forEach(function(header) {
+                    header.classList.remove('selected');
+                });
 
-            // Ðánh d?u tiêu d? dang du?c ch?n
-            element.classList.add('selected');
+                // Hi?n th? ph?n du?c ch?n
+                document.getElementById(sectionId).classList.remove('hidden');
 
-            // T?i d? li?u ghi chú n?u ph?n 'notes' du?c ch?n
-            if (sectionId === 'notes') {
-                const id = new URLSearchParams(window.location.search).get('id');
-                fetch('get_notes.php?id=' + id)
-                    .then(response => response.json())
-                    .then(data => {
-                        const notesList = document.getElementById('notes-list');
-                        notesList.innerHTML = '';
+                // Ðánh d?u tiêu d? dang du?c ch?n
+                element.classList.add('selected');
 
-                        if (data.length === 0) {
-                            notesList.innerHTML = '<tr><td colspan="4">Không có ghi chú nào.</td></tr>';
-                        } else {
-                            data.forEach((note, index) => {
-                                const noteRow = document.createElement('tr');
-                                noteRow.innerHTML = `
+                // T?i d? li?u ghi chú n?u ph?n 'notes' du?c ch?n
+                if (sectionId === 'notes') {
+                    const id = new URLSearchParams(window.location.search).get('id');
+                    fetch('get_notes.php?id=' + id)
+                        .then(response => response.json())
+                        .then(data => {
+                            const notesList = document.getElementById('notes-list');
+                            notesList.innerHTML = '';
+
+                            if (data.length === 0) {
+                                notesList.innerHTML = '<tr><td colspan="4">Không có ghi chú nào.</td></tr>';
+                            } else {
+                                data.forEach((note, index) => {
+                                    const noteRow = document.createElement('tr');
+                                    noteRow.innerHTML = `
                             <td>${index + 1}</td>
                             <td>${note.MoTa}</td>
                             <td>${note.NgayTao}</td>
@@ -386,70 +501,46 @@
                                 <button class="btn btn-danger" onclick="deleteNote(${note.Id_GhiChu})">Xóa</button>
                             </td>
                         `;
-                                notesList.appendChild(noteRow);
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('L?i:', error);
-                    });
+                                    notesList.appendChild(noteRow);
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('L?i:', error);
+                        });
+                }
+                // T?i d? li?u liên h? n?u ph?n 'contact' du?c ch?n
+                if (sectionId === 'contact') {
+                    showContacts();
+                }
             }
-            // T?i d? li?u liên h? n?u ph?n 'contact' du?c ch?n
-            if (sectionId === 'contact') {
-                showContacts();
+
+            function showAddNoteForm() {
+                document.getElementById('add-note-form').classList.remove('hidden');
             }
-        }
 
-        function showAddNoteForm() {
-            document.getElementById('add-note-form').classList.remove('hidden');
-        }
+            function hideAddNoteForm() {
+                document.getElementById('add-note-form').classList.add('hidden');
+            }
 
-        function hideAddNoteForm() {
-            document.getElementById('add-note-form').classList.add('hidden');
-        }
+            document.getElementById('note-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const id = new URLSearchParams(window.location.search).get('id');
+                const moTa = document.getElementById('moTa').value;
 
-        document.getElementById('note-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const id = new URLSearchParams(window.location.search).get('id');
-            const moTa = document.getElementById('moTa').value;
-
-            fetch('add_note.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `id=${id}&moTa=${encodeURIComponent(moTa)}`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Ghi chúđã được thêm.');
-                        document.getElementById('moTa').value = '';
-                        hideAddNoteForm();
-                        showSection('notes', document.querySelector('.left-column h3.selected'));
-                    } else {
-                        alert('Ðã xảy ra lỗi.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Lỗi:', error);
-                });
-        });
-
-        function editNote(noteId, currentMoTa) {
-            const newMoTa = prompt('Nhập mô tả mới:', currentMoTa);
-            if (newMoTa !== null && newMoTa !== currentMoTa) {
-                fetch('edit_note.php', {
+                fetch('add_note.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
                         },
-                        body: `noteId=${noteId}&moTa=${encodeURIComponent(newMoTa)}`
+                        body: `id=${id}&moTa=${encodeURIComponent(moTa)}`
                     })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            alert('Ghi chú dã được cập nhật.');
+                            alert('Ghi chúđã được thêm.');
+                            document.getElementById('moTa').value = '';
+                            hideAddNoteForm();
                             showSection('notes', document.querySelector('.left-column h3.selected'));
                         } else {
                             alert('Ðã xảy ra lỗi.');
@@ -458,57 +549,81 @@
                     .catch(error => {
                         console.error('Lỗi:', error);
                     });
-            }
-        }
+            });
 
-        function deleteNote(noteId) {
-            if (confirm('Bạn có chắc muốn xóa ghi chú này không?')) {
-                fetch('delete_note.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: `noteId=${noteId}`
-                    })
+            function editNote(noteId, currentMoTa) {
+                const newMoTa = prompt('Nhập mô tả mới:', currentMoTa);
+                if (newMoTa !== null && newMoTa !== currentMoTa) {
+                    fetch('edit_note.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: `noteId=${noteId}&moTa=${encodeURIComponent(newMoTa)}`
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Ghi chú dã được cập nhật.');
+                                showSection('notes', document.querySelector('.left-column h3.selected'));
+                            } else {
+                                alert('Ðã xảy ra lỗi.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Lỗi:', error);
+                        });
+                }
+            }
+
+            function deleteNote(noteId) {
+                if (confirm('Bạn có chắc muốn xóa ghi chú này không?')) {
+                    fetch('delete_note.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: `noteId=${noteId}`
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Ghi chú dã được xóa.');
+                                showSection('notes', document.querySelector('.left-column h3.selected'));
+                            } else {
+                                alert('Ðã xảy ra lỗi.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Lỗi:', error);
+                        });
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // Hi?n th? m?c 'Thông Tin' khi trang du?c t?i
+                var defaultSection = 'info';
+                var defaultElement = document.querySelector('.left-column h3[onclick*="' + defaultSection + '"]');
+
+                if (defaultElement) {
+                    showSection(defaultSection, defaultElement);
+                }
+            });
+
+            function showContacts() {
+                const id = new URLSearchParams(window.location.search).get('id');
+                fetch('get_contacts.php?id=' + id)
                     .then(response => response.json())
                     .then(data => {
-                        if (data.success) {
-                            alert('Ghi chú dã được xóa.');
-                            showSection('notes', document.querySelector('.left-column h3.selected'));
+                        const contactsList = document.getElementById('contacts-list');
+                        contactsList.innerHTML = '';
+
+                        if (data.length === 0) {
+                            contactsList.innerHTML = '<tr><td colspan="6">Không có liên hệ nào.</td></tr>';
                         } else {
-                            alert('Ðã xảy ra lỗi.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Lỗi:', error);
-                    });
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Hi?n th? m?c 'Thông Tin' khi trang du?c t?i
-            var defaultSection = 'info';
-            var defaultElement = document.querySelector('.left-column h3[onclick*="' + defaultSection + '"]');
-
-            if (defaultElement) {
-                showSection(defaultSection, defaultElement);
-            }
-        });
-
-        function showContacts() {
-            const id = new URLSearchParams(window.location.search).get('id');
-            fetch('get_contacts.php?id=' + id)
-                .then(response => response.json())
-                .then(data => {
-                    const contactsList = document.getElementById('contacts-list');
-                    contactsList.innerHTML = '';
-
-                    if (data.length === 0) {
-                        contactsList.innerHTML = '<tr><td colspan="6">Không có liên hệ nào.</td></tr>';
-                    } else {
-                        data.forEach((contact, index) => {
-                            const contactRow = document.createElement('tr');
-                            contactRow.innerHTML = `
+                            data.forEach((contact, index) => {
+                                const contactRow = document.createElement('tr');
+                                contactRow.innerHTML = `
                         <td>${index + 1}</td>
                         <td>${contact.HoTen}</td>
                         <td>${contact.Email}</td>
@@ -519,88 +634,113 @@
                             <button class="btn btn-danger" onclick="deleteContact(${contact.Id_LienHe})">Xóa</button>
                         </td>
                     `;
-                            contactsList.appendChild(contactRow);
-                        });
+                                contactsList.appendChild(contactRow);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi:', error);
+                    });
+            }
+
+
+            // Kh?i t?o hi?n th? ph?n m?c d?nh
+            document.addEventListener('DOMContentLoaded', function() {
+                const defaultSection = 'info'; // Ph?n m?c d?nh hi?n th? khi trang t?i
+                showSection(defaultSection, document.querySelector(`.left-column h3[onclick*="${defaultSection}"]`));
+            });
+
+
+            function showAddContactForm() {
+                document.getElementById('add-contact-form').classList.remove('hidden');
+            }
+
+            function hideAddContactForm() {
+                document.getElementById('add-contact-form').classList.add('hidden');
+            }
+
+            document.getElementById('contact-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const id = new URLSearchParams(window.location.search).get('id');
+                const hoTen = document.getElementById('hoTen').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+
+                fetch('add_contact.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `id=${id}&hoTen=${encodeURIComponent(hoTen)}&email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Ghi chú đã được thêm.');
+                            document.getElementById('hoTen').value = '';
+                            document.getElementById('email').value = '';
+                            document.getElementById('phone').value = '';
+                            hideAddNoteForm();
+                            showSection('contacts', document.querySelector('.left-column h3.selected'));
+                        } else {
+                            alert('Ðã xảy ra lỗi.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi:', error);
+                    });
+            });
+
+            function editContact(contactId, currentHoTen, currentEmail, currentPhone) {
+                // Nhập thông tin mới cho các trường liên hệ
+                const newHoTen = prompt('Nhập họ tên mới:', currentHoTen);
+                const newEmail = prompt('Nhập email mới:', currentEmail);
+                const newPhone = prompt('Nhập số điện thoại mới:', currentPhone);
+
+                // Kiểm tra nếu có bất kỳ thay đổi nào
+                if (newHoTen !== null && newEmail !== null && newPhone !== null) {
+                    // Kiểm tra xem thông tin có thay đổi không
+                    if (newHoTen !== currentHoTen || newEmail !== currentEmail || newPhone !== currentPhone) {
+                        // Gửi yêu cầu cập nhật dữ liệu
+                        fetch('edit_contact.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                },
+                                body: `contactId=${contactId}&hoTen=${encodeURIComponent(newHoTen)}&email=${encodeURIComponent(newEmail)}&phone=${encodeURIComponent(newPhone)}`
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert('Thông tin liên hệ đã được cập nhật.');
+                                    showContacts(); // Làm mới danh sách liên hệ sau khi cập nhật
+                                } else {
+                                    alert('Đã xảy ra lỗi khi cập nhật thông tin.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Lỗi:', error);
+                            });
                     }
-                })
-                .catch(error => {
-                    console.error('Lỗi:', error);
-                });
-        }
+                }
+            }
 
-
-        // Kh?i t?o hi?n th? ph?n m?c d?nh
-        document.addEventListener('DOMContentLoaded', function() {
-            const defaultSection = 'info'; // Ph?n m?c d?nh hi?n th? khi trang t?i
-            showSection(defaultSection, document.querySelector(`.left-column h3[onclick*="${defaultSection}"]`));
-        });
-
-
-        function showAddContactForm() {
-            document.getElementById('add-contact-form').classList.remove('hidden');
-        }
-
-        function hideAddContactForm() {
-            document.getElementById('add-contact-form').classList.add('hidden');
-        }
-
-        document.getElementById('contact-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const id = new URLSearchParams(window.location.search).get('id');
-            const hoTen = document.getElementById('hoTen').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-
-            fetch('add_contact.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `id=${id}&hoTen=${encodeURIComponent(hoTen)}&email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Ghi chú đã được thêm.');
-                        document.getElementById('hoTen').value = '';
-                        document.getElementById('email').value = '';
-                        document.getElementById('phone').value = '';
-                        hideAddNoteForm();
-                        showSection('contacts', document.querySelector('.left-column h3.selected'));
-                    } else {
-                        alert('Ðã xảy ra lỗi.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Lỗi:', error);
-                });
-        });
-
-        function editContact(contactId, currentHoTen, currentEmail, currentPhone) {
-            // Nhập thông tin mới cho các trường liên hệ
-            const newHoTen = prompt('Nhập họ tên mới:', currentHoTen);
-            const newEmail = prompt('Nhập email mới:', currentEmail);
-            const newPhone = prompt('Nhập số điện thoại mới:', currentPhone);
-
-            // Kiểm tra nếu có bất kỳ thay đổi nào
-            if (newHoTen !== null && newEmail !== null && newPhone !== null) {
-                // Kiểm tra xem thông tin có thay đổi không
-                if (newHoTen !== currentHoTen || newEmail !== currentEmail || newPhone !== currentPhone) {
-                    // Gửi yêu cầu cập nhật dữ liệu
-                    fetch('edit_contact.php', {
+            function deleteContact(contactId) {
+                if (confirm('Bạn có chắc muốn xóa liên hệ này không?')) {
+                    fetch('delete_contact.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
                             },
-                            body: `contactId=${contactId}&hoTen=${encodeURIComponent(newHoTen)}&email=${encodeURIComponent(newEmail)}&phone=${encodeURIComponent(newPhone)}`
+                            body: `contactId=${contactId}`
                         })
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                alert('Thông tin liên hệ đã được cập nhật.');
-                                showContacts(); // Làm mới danh sách liên hệ sau khi cập nhật
+                                alert('Liên hệ đã được xóa.');
+                                showContacts(); // Refresh the contact list
                             } else {
-                                alert('Đã xảy ra lỗi khi cập nhật thông tin.');
+                                alert('Đã xảy ra lỗi: ' + data.error);
                             }
                         })
                         .catch(error => {
@@ -608,32 +748,47 @@
                         });
                 }
             }
-        }
 
-        function deleteContact(contactId) {
-            if (confirm('Bạn có chắc muốn xóa liên hệ này không?')) {
-                fetch('delete_contact.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: `contactId=${contactId}`
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Liên hệ đã được xóa.');
-                            showContacts(); // Refresh the contact list
-                        } else {
-                            alert('Đã xảy ra lỗi: ' + data.error);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Lỗi:', error);
-                    });
+            function showAddInvoiceForm() {
+                document.getElementById("add-invoice-form").style.display = "block";
             }
-        }
-    </script>
+
+            function hideAddInvoiceForm() {
+                document.getElementById("add-invoice-form").style.display = "none";
+            }
+
+            function validateForm() {
+                var ngayThanhToan = document.getElementById('NgayThanhToan').value;
+                var ngayHetHan = document.getElementById('NgayHetHan').value;
+
+                if (new Date(ngayHetHan) <= new Date(ngayThanhToan)) {
+                    alert("Ngày Hết Hạn phải lớn hơn Ngày Thanh Toán.");
+                    return false; // Ngăn việc gửi form
+                }
+
+                return true;
+            }
+
+            function editInvoice(idHoaDon, event) {
+                // Ngăn không cho sự kiện click trên nút gây ra sự kiện click của hàng
+                event.stopPropagation();
+                // Mở form chỉnh sửa hóa đơn
+                window.location.href = `edit_invoice.php?id=${idHoaDon}`;
+            }
+
+            function deleteInvoice(idHoaDon, event) {
+                // Ngăn không cho sự kiện click trên nút gây ra sự kiện click của hàng
+                event.stopPropagation();
+                if (confirm("Bạn có chắc chắn muốn xóa hóa đơn này không?")) {
+                    // Gửi yêu cầu xóa đến server
+                    window.location.href = `delete_invoice.php?id=${idHoaDon}`;
+                }
+            }
+
+            function viewInvoiceDetails(invoiceId) {
+                window.location.href = 'Check_HoaDon.php?id=' + invoiceId;
+            }
+        </script>
 </body>
 
 </html>
