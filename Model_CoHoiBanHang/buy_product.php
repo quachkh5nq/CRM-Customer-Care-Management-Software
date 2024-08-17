@@ -13,7 +13,7 @@ if ($conn->connect_error) {
     die("Kết nối thất bại: " . $conn->connect_error);
 }
 
-// Truy vấn sản phẩm từ bảng sanpham
+// Truy vấn danh sách sản phẩm
 $sql = "SELECT Id_SanPham, TenSanPham FROM sanpham";
 $result = $conn->query($sql);
 
@@ -35,6 +35,7 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,6 +47,7 @@ $conn->close();
         }
     </style>
 </head>
+
 <body>
     <div class="container mt-5">
         <h1 class="mb-4">Mua Sản Phẩm</h1>
@@ -102,7 +104,7 @@ $conn->close();
             if (productId) {
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', 'get_product_info.php?id=' + productId, true);
-                xhr.onload = function () {
+                xhr.onload = function() {
                     if (xhr.status === 200) {
                         var response = JSON.parse(xhr.responseText);
                         if (response.error) {
@@ -118,7 +120,6 @@ $conn->close();
                 };
                 xhr.send();
             } else {
-                // Nếu không chọn sản phẩm, xóa thông tin mô tả và giá
                 document.getElementById('MoTa').value = '';
                 document.getElementById('Gia').value = '';
                 updateTotal();
@@ -133,9 +134,9 @@ $conn->close();
             document.getElementById('TongTien').value = total.toFixed(0);
         }
 
-        // Cập nhật tổng tiền khi số lượng hoặc thuế thay đổi
         document.getElementById('SoLuong').addEventListener('input', updateTotal);
         document.getElementById('TienThue').addEventListener('change', updateTotal);
     </script>
 </body>
+
 </html>

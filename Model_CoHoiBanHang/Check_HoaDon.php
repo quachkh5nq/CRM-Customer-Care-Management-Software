@@ -37,8 +37,6 @@
 </head>
 <body>
     <div class="container mt-5">
-        <!-- <h1 class="mb-4">Chi Tiết Hóa Đơn</h1> -->
-
         <?php
         // Kết nối cơ sở dữ liệu
         $servername = 'localhost';
@@ -58,13 +56,14 @@
         $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
         // Truy vấn chi tiết hóa đơn từ bảng hoadon
-        $sql_invoice = "SELECT Id_HoaDon, Id_khachhang, MaHoaDon, NguoiLapHoaDon, NgayThanhToan, NgayHetHan, TinhTrang 
+        $sql_invoice = "SELECT Id_HoaDon, Id_KhachHang, MaHoaDon, NguoiLapHoaDon, NgayThanhToan, NgayHetHan, TinhTrang 
                         FROM hoadon 
                         WHERE Id_HoaDon = $id";
         $result_invoice = $conn->query($sql_invoice);
 
         if ($result_invoice->num_rows > 0) {
             $row_invoice = $result_invoice->fetch_assoc();
+            $idKhachHang = $row_invoice["Id_KhachHang"];
             echo "<div class='card'>
                     <div class='card-header'>
                         Hóa Đơn: " . $row_invoice["MaHoaDon"] . "
@@ -75,7 +74,7 @@
                         <p><strong>Ngày Hết Hạn:</strong> " . $row_invoice["NgayHetHan"] . "</p>
                         <p><strong>Tình Trạng:</strong> " . $row_invoice["TinhTrang"] . "</p>
                         <!-- Nút Mua Sản Phẩm -->
-                        <a href='buy_product.php?id=" . $row_invoice["Id_HoaDon"] . "' class='btn btn-custom'>Mua Sản Phẩm</a>
+                        <a href='buy_product.php?Id_HoaDon=" . $row_invoice["Id_HoaDon"] . "&Id_KhachHang=" . $idKhachHang . "' class='btn btn-custom'>Mua Sản Phẩm</a>
                     </div>
                 </div>";
 

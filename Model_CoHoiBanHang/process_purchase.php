@@ -13,33 +13,43 @@ if ($conn->connect_error) {
     die("Kết nối thất bại: " . $conn->connect_error);
 }
 
-// Nhận dữ liệu từ form
+// Lấy dữ liệu từ form
 $idHoaDon = isset($_POST['Id_HoaDon']) ? intval($_POST['Id_HoaDon']) : 0;
-$tenSanPham = isset($_POST['TenSanPham']) ? $_POST['TenSanPham'] : '';
-$moTa = isset($_POST['MoTa']) ? $_POST['MoTa'] : '';
+$idKhachHang = isset($_POST['Id_KhachHang']) ? intval($_POST['Id_KhachHang']) : 0;
+$tenSanPham = isset($_POST['TenSanPham']) ? trim($_POST['TenSanPham']) : '';
+$moTa = isset($_POST['MoTa']) ? trim($_POST['MoTa']) : '';
 $gia = isset($_POST['Gia']) ? floatval($_POST['Gia']) : 0;
-$soLuong = isset($_POST['SoLuong']) ? intval($_POST['SoLuong']) : 0;
+$soLuong = isset($_POST['SoLuong']) ? intval($_POST['SoLuong']) : 1;
 $tienThue = isset($_POST['TienThue']) ? floatval($_POST['TienThue']) : 0;
 $tongTien = isset($_POST['TongTien']) ? floatval($_POST['TongTien']) : 0;
 
-// Chèn thông tin vào bảng ct_hoadon
-$sql = "INSERT INTO ct_hoadon (Id_HoaDon, TenSanPham, MoTa, SoLuong, Gia, TienThue, TongTien) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)";
+// Kiểm tra xem có sản phẩm được chọn hay không
+if ($idHoaDon > 0 && $idKhachHang > 0 && $tenSanPham != '' && $soLuong > 0 && $tongTien > 0) {
+    // Thực hiện chèn dữ liệu vào bảng chi tiết hóa đơn
+    $sql_insert = "INSERT INTO ct_hoadon (Id_HoaDon, Id_KhachHang, TenSanPham, MoTa, SoLuong, Gia, TienThue, TongTien) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-$stmt = $conn->prepare($sql);
-if ($stmt === false) {
-    die("Lỗi chuẩn bị câu lệnh: " . $conn->error);
-}
+    // Chuẩn bị và liên kết
+    $stmt = $conn->prepare($sql_insert);
+    $stmt->bind_param('iissdddd', $idHoaDon, $idKhachHang, $tenSanPham, $moTa, $soLuong, $gia, $tienThue, $tongTien);
 
-// Sử dụng loại kiểu cho các tham số
-$stmt->bind_param('issdddi', $idHoaDon, $tenSanPham, $moTa, $soLuong, $gia, $tienThue, $tongTien);
+    // Thực thi
+    if ($stmt->execute()) {
+        // Chèn thành công, chuyển hướng về trang Check_HoaDon.php
+        header("Location: Check_HoaDon.php?id=" . $idHoaDon);
+        exit(); // Đảm bảo không còn mã nào chạy sau khi chuyển hướng
+    } else {
+        // Lỗi khi chèn dữ liệu
+        echo "Lỗi: " . $stmt->error;
+    }
 
-if ($stmt->execute()) {
-    echo "Thông tin đã được lưu thành công!";
+    // Đóng statement
+    $stmt->close();
 } else {
-    echo "Lỗi: " . $stmt->error;
+    // Dữ liệu không hợp lệ
+    echo "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.";
 }
 
-$stmt->close();
+// Đóng kết nối
 $conn->close();
 ?>
