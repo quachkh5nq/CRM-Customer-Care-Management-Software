@@ -111,9 +111,9 @@
                             <td>" . htmlspecialchars($row_ct_invoice["TenSanPham"]) . "</td>
                             <td>" . htmlspecialchars($row_ct_invoice["MoTa"]) . "</td>
                             <td>" . number_format($row_ct_invoice["SoLuong"]) . "</td>
-                            <td>" . number_format($row_ct_invoice["Gia"], 2) . "</td>
+                            <td>" . number_format($row_ct_invoice["Gia"]) . "</td>
                             <td>" . number_format($row_ct_invoice["TienThue"], 2) . "</td>
-                            <td>" . number_format($row_ct_invoice["TongTien"], 2) . "</td>
+                            <td>" . number_format($row_ct_invoice["TongTien"]) . "</td>
                           </tr>";
                     $stt++;
                 }

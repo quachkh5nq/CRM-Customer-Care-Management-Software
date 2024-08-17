@@ -22,38 +22,24 @@ $soLuong = isset($_POST['SoLuong']) ? intval($_POST['SoLuong']) : 0;
 $tienThue = isset($_POST['TienThue']) ? floatval($_POST['TienThue']) : 0;
 $tongTien = isset($_POST['TongTien']) ? floatval($_POST['TongTien']) : 0;
 
-// Kiểm tra xem Id_HoaDon có hợp lệ không (có tồn tại trong bảng hoadon)
-$sql_check_invoice = "SELECT COUNT(*) as count FROM hoadon WHERE Id_HoaDon = ?";
-$stmt_check_invoice = $conn->prepare($sql_check_invoice);
-$stmt_check_invoice->bind_param('i', $idHoaDon);
-$stmt_check_invoice->execute();
-$stmt_check_invoice->bind_result($count);
-$stmt_check_invoice->fetch();
-$stmt_check_invoice->close();
+// Chèn thông tin vào bảng ct_hoadon
+$sql = "INSERT INTO ct_hoadon (Id_HoaDon, TenSanPham, MoTa, SoLuong, Gia, TienThue, TongTien) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-if ($count > 0) {
-    // Chèn thông tin vào bảng ct_hoadon
-    $sql = "INSERT INTO ct_hoadon (Id_HoaDon, TenSanPham, MoTa, SoLuong, Gia, TienThue, TongTien) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-    $stmt = $conn->prepare($sql);
-    if ($stmt === false) {
-        die("Lỗi chuẩn bị câu lệnh: " . $conn->error);
-    }
-
-    // Sử dụng loại kiểu cho các tham số
-    $stmt->bind_param('issdddi', $idHoaDon, $tenSanPham, $moTa, $soLuong, $gia, $tienThue, $tongTien);
-
-    if ($stmt->execute()) {
-        echo "Thông tin đã được lưu thành công!";
-    } else {
-        echo "Lỗi: " . $stmt->error;
-    }
-
-    $stmt->close();
-} else {
-    echo "Hóa đơn không tồn tại.";
+$stmt = $conn->prepare($sql);
+if ($stmt === false) {
+    die("Lỗi chuẩn bị câu lệnh: " . $conn->error);
 }
 
+// Sử dụng loại kiểu cho các tham số
+$stmt->bind_param('issdddi', $idHoaDon, $tenSanPham, $moTa, $soLuong, $gia, $tienThue, $tongTien);
+
+if ($stmt->execute()) {
+    echo "Thông tin đã được lưu thành công!";
+} else {
+    echo "Lỗi: " . $stmt->error;
+}
+
+$stmt->close();
 $conn->close();
 ?>

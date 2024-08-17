@@ -83,6 +83,7 @@ $conn->close();
                 <select name="TienThue" id="TienThue" class="form-control" onchange="updateTotal()">
                     <option value="0.10">10%</option>
                     <option value="0.08">8%</option>
+                    <option value="0">0%</option>
                 </select>
             </div>
 
@@ -129,7 +130,7 @@ $conn->close();
             var price = parseFloat(document.getElementById('Gia').value) || 0;
             var taxRate = parseFloat(document.getElementById('TienThue').value) || 0;
             var total = (quantity * price) + (quantity * price * taxRate);
-            document.getElementById('TongTien').value = total.toFixed(2);
+            document.getElementById('TongTien').value = total.toFixed(0);
         }
 
         // Cập nhật tổng tiền khi số lượng hoặc thuế thay đổi
