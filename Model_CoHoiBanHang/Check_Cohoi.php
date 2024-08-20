@@ -265,6 +265,8 @@
                 emailForm.style.display = 'none';
             }
         }
+
+        
     </script>
 </head>
 
@@ -305,12 +307,15 @@
             ?>
             <a href="#" data-content="customer-info" onclick="showContent('customer-info'); return false;">Thông tin chung</a>
             <a href="#" data-content="reminders" onclick="showContent('reminders'); return false;">Nhắc nhở</a>
-            <a href="#" data-content="care" >Hóa đơn</a>
-            <a href="#" data-content="care" >Lịch sử mua hàng</a>
-            <a href="#" data-content="care" >Ghi chú</a>
+            <a href="#" data-content="care">Hóa đơn</a>
+            <a href="#" data-content="care">Lịch sử mua hàng</a>
+            <a href="#" data-content="care">Ghi chú</a>
         </div>
         <div class="content">
             <div id="customer-info" class="customer-info active">
+
+
+
                 <?php
                 // Truy vấn thông tin khách hàng
                 $sql = "SELECT * FROM khachhangch WHERE Id_KHCH = ?";
@@ -339,6 +344,7 @@
 
                 $stmt->close();
                 ?>
+
             </div>
             <div id="reminders" class="reminders">
                 <div class="button-container">
@@ -477,7 +483,7 @@
 
         </div>
     </div>
+    <script src="path/to/your/script.js"></script>
 </body>
 
 </html>
-

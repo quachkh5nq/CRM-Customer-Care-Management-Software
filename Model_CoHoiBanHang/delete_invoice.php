@@ -5,7 +5,7 @@ $username = 'root';
 $password = '';
 $dbname = 'db_crm';
 
-// Kết nối cơ sở dữ liệu
+// Tạo kết nối
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Kiểm tra kết nối
@@ -13,29 +13,25 @@ if ($conn->connect_error) {
     die("Kết nối thất bại: " . $conn->connect_error);
 }
 
-// Lấy ID hóa đơn cần xóa từ URL
-$idHoaDon = $_GET['id'];
+// Lấy ID hợp đồng cần xóa từ URL
+$idHopDong = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-// Lấy ID khách hàng liên kết với hóa đơn trước khi xóa
-$sql_getCustomerId = "SELECT Id_khachhang FROM hoadon WHERE Id_HoaDon = $idHoaDon";
-$result = $conn->query($sql_getCustomerId);
+// Kiểm tra xem ID hợp đồng có hợp lệ không
+if ($idHopDong <= 0) {
+    echo "ID hợp đồng không hợp lệ.";
+    $conn->close();
+    exit;
+}
 
-if ($result && $result->num_rows > 0) {
-    // Lấy ID khách hàng
-    $row = $result->fetch_assoc();
-    $idKhachHang = $row['Id_khachhang'];
+// Thực hiện truy vấn xóa hợp đồng
+$sql_delete = "DELETE FROM hopdong WHERE Id_HopDong = $idHopDong";
 
-    // Xóa hóa đơn
-    $sql_delete = "DELETE FROM hoadon WHERE Id_HoaDon = $idHoaDon";
-    if ($conn->query($sql_delete) === TRUE) {
-        // Sau khi xóa thành công, chuyển hướng về trang chi tiết khách hàng với Id_khachhang tương ứng
-        header("Location: Check_KhachHang.php?id=$idKhachHang");
-        exit;
-    } else {
-        echo "Lỗi khi xóa hóa đơn: " . $conn->error;
-    }
+if ($conn->query($sql_delete) === TRUE) {
+    // Sau khi xóa thành công, chuyển hướng về trang danh sách hợp đồng
+    header("Location: Check_KhachHang.php");
+    exit;
 } else {
-    echo "Hóa đơn không tồn tại hoặc không thể tìm thấy khách hàng liên kết.";
+    echo "Lỗi khi xóa hợp đồng: " . $conn->error;
 }
 
 // Đóng kết nối

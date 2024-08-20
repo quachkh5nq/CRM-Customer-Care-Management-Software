@@ -187,6 +187,28 @@
         .table-container {
             position: relative;
         }
+        .submenu2 {
+            display: none;
+            margin-top: 10px;
+        }
+        .submenu2 p {
+            margin: 0;
+        }
+        .submenu2 a {
+            display: block;
+            padding: 5px 0;
+            text-decoration: none;
+            color: black;
+        }
+        .submenu2 a:hover {
+            color: #007bff;
+        }
+        .toggle-icon2 {
+            transition: transform 0.3s ease;
+        }
+        .toggle-icon2.down {
+            transform: rotate(90deg);
+        }
     </style>
 </head>
 
@@ -206,9 +228,23 @@
                     </a>
                 </p>
                 <div id="submenu" class="submenu">
-                    <p><a href="Home_CHBH.php" style="text-decoration: none; color: black; height: 20px; margin-left: 30px;">Danh Sách Cơ Hội</a></p>
-                    <p><a href="javascript:void(0);" id="list-opportunities" style="text-decoration: none; color: black; height: 40px; margin-left: 30px;">Lịch Chăm Sóc</a></p>
+                    <p><a href="index.php" style="text-decoration: none; color: black; height: 20px; margin-left: 30px;">Danh Sách Cơ Hội</a></p>
+                    <p><a href="Home_LichCSKH.php" style="text-decoration: none; color: black; height: 40px; margin-left: 30px;">Lịch Chăm Sóc</a></p>
                     <p><a href="Home_KhachHang.php" style="text-decoration: none; color: black; height: 20px; margin-left: 30px;">Danh Sách Khách Hàng</a></p>
+                </div>
+            </div>
+
+            <div style="text-align: left; margin-top: 20px;">
+                <p>
+                    <a href="javascript:void(0);" style="text-decoration: none; color: black;" onclick="toggleSubMenu2()">
+                        <img src="icon/supplier-alt.png" alt="Icon Sản phẩm" style="width: 20px; height: 20px; margin-right: 10px;">
+                        Sản phẩm
+                        <i id="toggle-icon2" class="fas fa-chevron-right toggle-icon2" style="width: 10px; height: 10px; margin-left: 145px;"></i>
+                    </a>
+                </p>
+                <div id="submenu2" class="submenu2">
+                    <p><a href="Home_SanPham.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Danh Sách Sản phẩm</a></p>
+                    <p><a href="#" style="text-decoration: none; color: black; height: 40px; margin-left: 60px;">Hóa Đơn</a></p>
                 </div>
             </div>
         </div>
@@ -407,6 +443,18 @@
                 icon.classList.remove('down');
             }
         }
+        function toggleSubMenu2() {
+                    var submenu = document.getElementById('submenu2');
+                    var toggleIcon = document.getElementById('toggle-icon2');
+
+                    if (submenu.style.display === 'block') {
+                        submenu.style.display = 'none';
+                        toggleIcon.classList.remove('down');
+                    } else {
+                        submenu.style.display = 'block';
+                        toggleIcon.classList.add('down');
+                    }
+                }
 
         function editRecord(id) {
             // Hiển thị modal hoặc chuyển hướng đến trang chỉnh sửa

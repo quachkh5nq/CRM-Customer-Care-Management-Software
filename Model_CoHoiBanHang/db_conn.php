@@ -1,14 +1,17 @@
-<?php  
+<?php
+// db_conn.php
 
-$sname = 'localhost'; // Localhost máy chủ của mình
-$uname = 'root'; // Tên localhost
-$password = ''; // Password của localhost
+// Thông tin kết nối cơ sở dữ liệu
+$servername = 'crm.adotech.vn';
+$username = 'xekhacha_xekhacha';
+$password = 'HOCGc1Y7M4Az';
+$dbname = 'xekhacha_db_crm';
 
-$db_name = 'db_crm'; // Tên database
+// Kết nối tới MySQL
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-$conn = mysqli_connect($sname, $uname, $password, $db_name);
-
-if (!$conn) {
-	echo "Connection Failed!";
-	exit();
+// Kiểm tra kết nối
+if ($conn->connect_error) {
+    die("Kết nối thất bại: " . $conn->connect_error);
 }
+?>

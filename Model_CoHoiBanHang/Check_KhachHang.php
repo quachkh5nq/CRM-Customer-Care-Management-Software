@@ -454,7 +454,153 @@
 
             <div id="merge" class="section hidden">
                 <h2>Hợp Ðồng</h2>
-                <p>Chức năng này đang được phát triển.</p>
+                <!-- Button để hiển thị form thêm mới hóa đơn -->
+                <button onclick="showAddMergeForm()" class="btn btn-primary mb-3">Thêm Mới Merge</button>
+
+                <!-- Form thêm mới Merge -->
+                <div id="add-merge-form" style="display:none;">
+                    <form action="add_merge.php" method="post" onsubmit="return validateMergeForm()">
+                        <input type="hidden" name="Id_khachhang" id="Id_khachhang" value="<?php echo $id; ?>">
+
+                        <div class="form-group">
+                            <label for="TenMerge">Tên Merge:</label>
+                            <input type="text" name="TenMerge" id="TenMerge" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="LoaiMerge">Loại Merge:</label>
+                            <select name="LoaiMerge" id="LoaiMerge" class="form-control" required>
+                                <?php
+                                // Kết nối cơ sở dữ liệu
+                                $servername = 'localhost';
+                                $username = 'root';
+                                $password = '';
+                                $dbname = 'db_crm';
+
+                                // Tạo kết nối
+                                $conn = new mysqli($servername, $username, $password, $dbname);
+
+                                // Kiểm tra kết nối
+                                if ($conn->connect_error) {
+                                    die("Kết nối thất bại: " . $conn->connect_error);
+                                }
+
+                                // Truy vấn loại hợp đồng từ bảng ct_loaihopdong
+                                $sql_loai = "SELECT TenLoaiHopDong FROM ct_loaihopdong";
+                                $result_loai = $conn->query($sql_loai);
+
+                                // Kiểm tra và in ra dữ liệu loại hợp đồng
+                                if ($result_loai->num_rows > 0) {
+                                    while ($row_loai = $result_loai->fetch_assoc()) {
+                                        echo "<option value=\"" . htmlspecialchars($row_loai["TenLoaiHopDong"]) . "\">" . htmlspecialchars($row_loai["TenLoaiHopDong"]) . "</option>";
+                                    }
+                                } else {
+                                    echo "<option value=\"\">Không có loại hợp đồng nào.</option>";
+                                }
+
+                                // Đóng kết nối
+                                $conn->close();
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="GiaTriMerge">Giá Trị Merge:</label>
+                            <input type="number" name="GiaTriMerge" id="GiaTriMerge" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="NgayBatDau">Ngày Bắt Đầu:</label>
+                            <input type="date" name="NgayBatDau" id="NgayBatDau" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="NgayKetThuc">Ngày Kết Thúc:</label>
+                            <input type="date" name="NgayKetThuc" id="NgayKetThuc" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ChuKy">Chu Kỳ:</label>
+                            <input type="text" name="ChuKy" id="ChuKy" class="form-control" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Lưu</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideAddMergeForm()">Hủy</button>
+                    </form>
+                </div>
+
+
+                <!-- Bảng hiển thị danh sách Merge -->
+                <div id="merge-list">
+                    <?php
+                    // Kết nối cơ sở dữ liệu
+                    $servername = 'localhost';
+                    $username = 'root';
+                    $password = '';
+                    $dbname = 'db_crm';
+
+                    // Tạo kết nối
+                    $conn = new mysqli($servername, $username, $password, $dbname);
+
+                    // Kiểm tra kết nối
+                    if ($conn->connect_error) {
+                        die("Kết nối thất bại: " . $conn->connect_error);
+                    }
+
+                    // Lấy Id_khachhang từ URL
+                    $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+                    // Truy vấn Merge từ bảng hopdong
+                    $sql_merge = "SELECT Id_HopDong, TenHopDong, LoaiHopDong, GiaTriHopDong, NgayBatDau, NgayKetThuc, ChuKy 
+    FROM hopdong 
+    WHERE Id_khachhang = $id";
+                    $result_merge = $conn->query($sql_merge);
+
+                    // Kiểm tra và in ra dữ liệu Merge
+                    if ($result_merge->num_rows > 0) {
+                        echo "<table class='table table-hover'>
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên Merge</th>
+                    <th>Loại Merge</th>
+                    <th>Giá Trị</th>
+                    <th>Ngày Bắt Đầu</th>
+                    <th>Ngày Kết Thúc</th>
+                    <th>Chu Kỳ</th>
+                    <th>Tùy Chỉnh</th>
+                </tr>
+            </thead>
+            <tbody>";
+                        $stt = 1;
+                        while ($row_merge = $result_merge->fetch_assoc()) {
+                            echo "<tr onclick=\"viewMergeDetails(" . $row_merge['Id_HopDong'] . ")\">
+                <td>" . $stt . "</td>
+                <td class='clickable'>" . $row_merge["TenHopDong"] . "</td>
+                <td>" . $row_merge["LoaiHopDong"] . "</td>
+                <td>" . $row_merge["GiaTriHopDong"] . "</td>
+                <td>" . $row_merge["NgayBatDau"] . "</td>
+                <td>" . $row_merge["NgayKetThuc"] . "</td>
+                <td>" . $row_merge["ChuKy"] . "</td>
+                <td>
+                    <button onclick=\"editMerge(" . $row_merge['Id_HopDong'] . ", event)\" class='btn btn-warning btn-sm'>Chỉnh sửa</button>
+                    <button onclick=\"deleteMerge(" . $row_merge['Id_HopDong'] . ", event)\" class='btn btn-danger btn-sm'>Xóa</button>
+                </td>
+            </tr>";
+                            $stt++;
+                        }
+                        echo "</tbody>
+        </table>";
+                    } else {
+                        echo "Không có Merge nào.";
+                    }
+
+                    // Đóng kết nối
+                    $conn->close();
+                    ?>
+                </div>
+
+
             </div>
 
         </div>
@@ -749,6 +895,8 @@
                 }
             }
 
+            // Hóa Đơn
+
             function showAddInvoiceForm() {
                 document.getElementById("add-invoice-form").style.display = "block";
             }
@@ -788,6 +936,53 @@
             function viewInvoiceDetails(invoiceId) {
                 window.location.href = 'Check_HoaDon.php?id=' + invoiceId;
             }
+
+
+            // Hiển thị form thêm mới hợp đồng
+            function showAddMergeForm() {
+                document.getElementById("add-merge-form").style.display = "block";
+            }
+
+            // Ẩn form thêm mới hợp đồng
+            function hideAddMergeForm() {
+                document.getElementById("add-merge-form").style.display = "none";
+            }
+
+            // Xác thực form thêm mới hợp đồng
+            function validateMergeForm() {
+                var ngayBatDau = document.getElementById('NgayBatDau').value;
+                var ngayKetThuc = document.getElementById('NgayKetThuc').value;
+
+                if (new Date(ngayKetThuc) <= new Date(ngayBatDau)) {
+                    alert("Ngày Kết Thúc phải lớn hơn Ngày Bắt Đầu.");
+                    return false; // Ngăn việc gửi form
+                }
+
+                return true;
+            }
+
+            // Chỉnh sửa hợp đồng
+            function editMerge(idMerge, event) {
+                // Ngăn không cho sự kiện click trên nút gây ra sự kiện click của hàng
+                event.stopPropagation();
+                // Mở form chỉnh sửa hợp đồng
+                window.location.href = `edit_merge.php?id=${idMerge}`;
+            }
+
+            // Xóa hợp đồng
+            function deleteMerge(idMerge, event) {
+                // Ngăn không cho sự kiện click trên nút gây ra sự kiện click của hàng
+                event.stopPropagation();
+                if (confirm("Bạn có chắc chắn muốn xóa hợp đồng này không?")) {
+                    // Gửi yêu cầu xóa đến server
+                    window.location.href = `delete_merge.php?id=${idMerge}`;
+                }
+            }
+
+            // Xem chi tiết hợp đồng
+            // function viewMergeDetails(mergeId) {
+            //     window.location.href = 'Check_Merge.php?id=' + mergeId;
+            // }
         </script>
 </body>
 
