@@ -1,14 +1,6 @@
 <?php
-$servername = 'localhost';
-$username = 'root';
-$password = '';
-$dbname = 'db_crm';
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die(json_encode(['status' => 'error', 'message' => 'Kết nối cơ sở dữ liệu thất bại.']));
-}
+// Bao gồm file kết nối cơ sở dữ liệu
+require 'db_conn.php';
 
 $sql = "SELECT HovaTen FROM nhanvien";
 $result = $conn->query($sql);

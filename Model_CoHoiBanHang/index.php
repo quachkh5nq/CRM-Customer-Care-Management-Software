@@ -447,25 +447,31 @@
             text-decoration: underline;
             /* Gạch dưới khi hover (tuỳ chọn) */
         }
+
         .submenu2 {
             display: none;
             margin-top: 10px;
         }
+
         .submenu2 p {
             margin: 0;
         }
+
         .submenu2 a {
             display: block;
             padding: 5px 0;
             text-decoration: none;
             color: black;
         }
+
         .submenu2 a:hover {
             color: #007bff;
         }
+
         .toggle-icon2 {
             transition: transform 0.3s ease;
         }
+
         .toggle-icon2.down {
             transform: rotate(90deg);
         }
@@ -487,7 +493,7 @@
                         Khách hàng
                         <i id="toggle-icon" class="fas fa-chevron-right toggle-icon" style="width: 10px; height: 10px; margin-left: 130px;"></i>
                     </a>
-                    
+
                 </p>
                 <div id="submenu" class="submenu">
                     <p><a href="javascript:void(0);" id="list-opportunities" style="text-decoration: none; color: black; height: 20px; margin-left: 30px;">Danh Sách Cơ Hội</a></p>
@@ -507,6 +513,8 @@
                 </p>
                 <div id="submenu2" class="submenu2">
                     <p><a href="Home_SanPham.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Danh Sách Sản phẩm</a></p>
+                    <p><a href="Home_NhomSanPham.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Nhóm Sản Phẩm</a></p>
+                    <p><a href="Home_NhomDonVi.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Nhóm Đơn Vị</a></p>
                     <p><a href="#" style="text-decoration: none; color: black; height: 40px; margin-left: 60px;">Hóa Đơn</a></p>
                 </div>
             </div>
@@ -542,19 +550,8 @@
             <!-- Container cho bảng dữ liệu -->
             <div>
                 <?php
-                // Thông tin kết nối cơ sở dữ liệu
-                $servername = 'localhost';
-                $username = 'root';
-                $password = '';
-                $dbname = 'db_crm';
-
-                // Tạo kết nối
-                $conn = new mysqli($servername, $username, $password, $dbname);
-
-                // Kiểm tra kết nối
-                if ($conn->connect_error) {
-                    die("Kết nối thất bại: " . $conn->connect_error);
-                }
+                // Bao gồm file kết nối cơ sở dữ liệu
+                require 'db_conn.php';
 
                 // Truy vấn dữ liệu từ bảng khachhangch và nhanvien
                 $sql = "SELECT khachhangch.Id_KHCH, khachhangch.Ten, khachhangch.TenCongTy, khachhangch.Email, khachhangch.Phone, 
@@ -721,18 +718,19 @@
                 icon.classList.add('down');
             }
         }
-        function toggleSubMenu2() {
-                    var submenu = document.getElementById('submenu2');
-                    var toggleIcon = document.getElementById('toggle-icon2');
 
-                    if (submenu.style.display === 'block') {
-                        submenu.style.display = 'none';
-                        toggleIcon.classList.remove('down');
-                    } else {
-                        submenu.style.display = 'block';
-                        toggleIcon.classList.add('down');
-                    }
-                }
+        function toggleSubMenu2() {
+            var submenu = document.getElementById('submenu2');
+            var toggleIcon = document.getElementById('toggle-icon2');
+
+            if (submenu.style.display === 'block') {
+                submenu.style.display = 'none';
+                toggleIcon.classList.remove('down');
+            } else {
+                submenu.style.display = 'block';
+                toggleIcon.classList.add('down');
+            }
+        }
 
         function toggleDataContainer() {
             var dataContainer = document.getElementById('data-container');

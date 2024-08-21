@@ -147,11 +147,8 @@
                         <select id="nguoiphutrach" name="nguoiphutrach">
                             <!-- PHP để tạo các tùy chọn -->
                             <?php
-                            // Kết nối cơ sở dữ liệu
-                            $conn = new mysqli('localhost', 'root', '', 'db_crm');
-                            if ($conn->connect_error) {
-                                die("Kết nối thất bại: " . $conn->connect_error);
-                            }
+                            // Bao gồm file kết nối cơ sở dữ liệu
+                            require 'db_conn.php';
 
                             // Lấy dữ liệu từ bảng nhanvien
                             $sql = "SELECT Id_NhanVien, HovaTen FROM nhanvien";

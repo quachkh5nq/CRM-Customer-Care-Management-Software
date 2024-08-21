@@ -228,25 +228,31 @@
             color: #007bff;
             /* Màu chữ khi di chuột qua liên kết, tùy chọn */
         }
+
         .submenu2 {
             display: none;
             margin-top: 10px;
         }
+
         .submenu2 p {
             margin: 0;
         }
+
         .submenu2 a {
             display: block;
             padding: 5px 0;
             text-decoration: none;
             color: black;
         }
+
         .submenu2 a:hover {
             color: #007bff;
         }
+
         .toggle-icon2 {
             transition: transform 0.3s ease;
         }
+
         .toggle-icon2.down {
             transform: rotate(90deg);
         }
@@ -285,6 +291,8 @@
                 </p>
                 <div id="submenu2" class="submenu2">
                     <p><a href="Home_SanPham.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Danh Sách Sản phẩm</a></p>
+                    <p><a href="Home_NhomSanPham.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Nhóm Sản Phẩm</a></p>
+                    <p><a href="Home_NhomDonVi.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Nhóm Đơn Vị</a></p>
                     <p><a href="#" style="text-decoration: none; color: black; height: 40px; margin-left: 60px;">Hóa Đơn</a></p>
                 </div>
             </div>
@@ -312,19 +320,8 @@
 
             <div>
                 <?php
-                // Thông tin kết nối cơ sở dữ liệu
-                $servername = 'localhost';
-                $username = 'root';
-                $password = '';
-                $dbname = 'db_crm';
-
-                // Tạo kết nối
-                $conn = new mysqli($servername, $username, $password, $dbname);
-
-                // Kiểm tra kết nối
-                if ($conn->connect_error) {
-                    die("Kết nối thất bại: " . $conn->connect_error);
-                }
+                // Bao gồm file kết nối cơ sở dữ liệu
+                require 'db_conn.php';
 
                 // Truy vấn dữ liệu từ bảng khachhang
                 $sql = "SELECT Id_khachhang, TenKhachHang, LienHeChinh, TrangWeb, MaSoThue, NhomKhachHang, DiaChi, KhuVuc, Phone, DonViTien, NgayThanhLap, Email, TrangThai, NguoiPhuTrach, NgayTao FROM khachhang";

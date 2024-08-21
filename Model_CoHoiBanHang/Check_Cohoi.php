@@ -265,8 +265,6 @@
                 emailForm.style.display = 'none';
             }
         }
-
-        
     </script>
 </head>
 
@@ -274,17 +272,8 @@
     <div class="container">
         <div class="sidebar">
             <?php
-            // Kết nối cơ sở dữ liệu
-            $servername = 'localhost';
-            $username = 'root';
-            $password = '';
-            $dbname = 'db_crm';
-
-            $conn = new mysqli($servername, $username, $password, $dbname);
-
-            if ($conn->connect_error) {
-                die("Kết nối thất bại: " . $conn->connect_error);
-            }
+            // Bao gồm file kết nối cơ sở dữ liệu
+            require 'db_conn.php';
 
             // Lấy ID từ query string
             $id = $_GET['id'];

@@ -1,17 +1,7 @@
 <?php
-// Thông tin kết nối cơ sở dữ liệu
-$servername = 'localhost';
-$username = 'root';
-$password = '';
-$dbname = 'db_crm';
+// Bao gồm file kết nối cơ sở dữ liệu
+require 'db_conn.php';
 
-// Tạo kết nối
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Kiểm tra kết nối
-if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
-}
 
 // Lấy dữ liệu từ POST
 $id = intval($_POST['id']); // ID khách hàng từ URL

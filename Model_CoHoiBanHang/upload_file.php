@@ -1,18 +1,6 @@
 <?php
-// Kết nối cơ sở dữ liệu
-$servername = 'localhost';
-$username = 'root';
-$password = '';
-$dbname = 'db_crm';
-
-// Tạo kết nối
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Kiểm tra kết nối
-if ($conn->connect_error) {
-    echo json_encode(['status' => 'error', 'message' => 'Kết nối cơ sở dữ liệu thất bại.']);
-    exit();
-}
+// Bao gồm file kết nối cơ sở dữ liệu
+require 'db_conn.php';
 
 // Kiểm tra nếu tệp được tải lên
 if (isset($_FILES['fileToUpload']) && $_FILES['fileToUpload']['error'] == 0) {

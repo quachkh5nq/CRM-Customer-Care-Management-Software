@@ -187,25 +187,31 @@
         .table-container {
             position: relative;
         }
+
         .submenu2 {
             display: none;
             margin-top: 10px;
         }
+
         .submenu2 p {
             margin: 0;
         }
+
         .submenu2 a {
             display: block;
             padding: 5px 0;
             text-decoration: none;
             color: black;
         }
+
         .submenu2 a:hover {
             color: #007bff;
         }
+
         .toggle-icon2 {
             transition: transform 0.3s ease;
         }
+
         .toggle-icon2.down {
             transform: rotate(90deg);
         }
@@ -244,6 +250,8 @@
                 </p>
                 <div id="submenu2" class="submenu2">
                     <p><a href="Home_SanPham.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Danh Sách Sản phẩm</a></p>
+                    <p><a href="Home_NhomSanPham.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Nhóm Sản Phẩm</a></p>
+                    <p><a href="Home_NhomDonVi.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Nhóm Đơn Vị</a></p>
                     <p><a href="#" style="text-decoration: none; color: black; height: 40px; margin-left: 60px;">Hóa Đơn</a></p>
                 </div>
             </div>
@@ -267,17 +275,8 @@
 
             <div>
                 <?php
-                $servername = 'localhost';
-                $username = 'root';
-                $password = '';
-                $dbname = 'db_crm';
-
-                $conn = new mysqli($servername, $username, $password, $dbname);
-
-                if ($conn->connect_error) {
-                    echo json_encode(['status' => 'error', 'message' => 'Kết nối cơ sở dữ liệu thất bại.']);
-                    exit();
-                }
+                // Bao gồm file kết nối cơ sở dữ liệu
+                require 'db_conn.php';
 
                 $sql = "SELECT ID_LichCSKH, TieuDe, TinhTrangCoHoi, NguonCoHoi, NgayDuKien, GuiDen, HovaTen, TrangThai FROM lichcskh";
                 $result = $conn->query($sql);
@@ -443,18 +442,19 @@
                 icon.classList.remove('down');
             }
         }
-        function toggleSubMenu2() {
-                    var submenu = document.getElementById('submenu2');
-                    var toggleIcon = document.getElementById('toggle-icon2');
 
-                    if (submenu.style.display === 'block') {
-                        submenu.style.display = 'none';
-                        toggleIcon.classList.remove('down');
-                    } else {
-                        submenu.style.display = 'block';
-                        toggleIcon.classList.add('down');
-                    }
-                }
+        function toggleSubMenu2() {
+            var submenu = document.getElementById('submenu2');
+            var toggleIcon = document.getElementById('toggle-icon2');
+
+            if (submenu.style.display === 'block') {
+                submenu.style.display = 'none';
+                toggleIcon.classList.remove('down');
+            } else {
+                submenu.style.display = 'block';
+                toggleIcon.classList.add('down');
+            }
+        }
 
         function editRecord(id) {
             // Hiển thị modal hoặc chuyển hướng đến trang chỉnh sửa

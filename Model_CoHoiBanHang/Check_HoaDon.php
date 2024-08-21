@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,48 +10,46 @@
         .container {
             max-width: 1200px;
         }
+
         .card {
             margin-bottom: 20px;
         }
+
         .card-header {
             font-size: 1.25rem;
             font-weight: bold;
         }
+
         .card-body p {
             margin-bottom: 10px;
         }
+
         .table thead th {
             background-color: #f8f9fa;
         }
-        .table td, .table th {
+
+        .table td,
+        .table th {
             vertical-align: middle;
         }
+
         .btn-custom {
             background-color: #007bff;
             color: white;
         }
+
         .btn-custom:hover {
             background-color: #0056b3;
             color: white;
         }
     </style>
 </head>
+
 <body>
     <div class="container mt-5">
         <?php
-        // Kết nối cơ sở dữ liệu
-        $servername = 'localhost';
-        $username = 'root';
-        $password = '';
-        $dbname = 'db_crm';
-
-        // Tạo kết nối
-        $conn = new mysqli($servername, $username, $password, $dbname);
-
-        // Kiểm tra kết nối
-        if ($conn->connect_error) {
-            die("Kết nối thất bại: " . $conn->connect_error);
-        }
+        // Bao gồm file kết nối cơ sở dữ liệu
+        require 'db_conn.php';
 
         // Lấy Id_HoaDon từ URL
         $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -85,7 +84,8 @@
             $result_ct_invoice = $conn->query($sql_ct_invoice);
 
             if ($result_ct_invoice->num_rows > 0) {
-                echo "<div class='card'>
+                echo "<form action='delete_ct_hoadon.php' method='POST'>
+                        <div class='card'>
                         <div class='card-header'>
                             Chi Tiết Hóa Đơn
                         </div>
@@ -93,6 +93,7 @@
                             <table class='table table-bordered'>
                                 <thead>
                                     <tr>
+                                        <th><input type='checkbox' id='select_all'></th>
                                         <th>STT</th>
                                         <th>Tên Sản Phẩm</th>
                                         <th>Mô Tả</th>
@@ -100,12 +101,14 @@
                                         <th>Giá</th>
                                         <th>Tiền Thuế</th>
                                         <th>Tổng Tiền</th>
+                                        <th>Hành Động</th>
                                     </tr>
                                 </thead>
                                 <tbody>";
                 $stt = 1;
                 while ($row_ct_invoice = $result_ct_invoice->fetch_assoc()) {
                     echo "<tr>
+                            <td><input type='checkbox' name='selected_items[]' value='" . $row_ct_invoice["Id_CTHoaDon"] . "'></td>
                             <td>" . $stt . "</td>
                             <td>" . htmlspecialchars($row_ct_invoice["TenSanPham"]) . "</td>
                             <td>" . htmlspecialchars($row_ct_invoice["MoTa"]) . "</td>
@@ -113,13 +116,20 @@
                             <td>" . number_format($row_ct_invoice["Gia"]) . "</td>
                             <td>" . number_format($row_ct_invoice["TienThue"], 2) . "</td>
                             <td>" . number_format($row_ct_invoice["TongTien"]) . "</td>
+                            <td>
+                                <a href='edit_product.php?Id_CTHoaDon=" . $row_ct_invoice["Id_CTHoaDon"] . "&Id_HoaDon=" . $id . "' class='btn btn-warning btn-sm'>Chỉnh Sửa</a>
+                            </td>
                           </tr>";
                     $stt++;
                 }
                 echo "</tbody>
                       </table>
+                      <!-- Nút Xóa Sản Phẩm Đã Chọn -->
+                      <button type='submit' class='btn btn-danger'>Xóa Sản Phẩm Đã Chọn</button>
                     </div>
-                </div>";
+                </div>
+                <input type='hidden' name='Id_HoaDon' value='$id'>
+                </form>";
             } else {
                 echo "<div class='alert alert-info'>Không có chi tiết hóa đơn nào.</div>";
             }
@@ -130,6 +140,17 @@
         // Đóng kết nối
         $conn->close();
         ?>
+
+        <script>
+            // Tự động chọn tất cả checkbox
+            document.getElementById('select_all').onclick = function() {
+                var checkboxes = document.querySelectorAll('input[name=\"selected_items[]\"]');
+                for (var checkbox of checkboxes) {
+                    checkbox.checked = this.checked;
+                }
+            }
+        </script>
     </div>
 </body>
+
 </html>

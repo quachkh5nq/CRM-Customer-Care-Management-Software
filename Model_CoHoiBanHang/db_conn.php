@@ -1,13 +1,16 @@
 <?php
-// db_conn.php
+
+// Bao gồm file kết nối cơ sở dữ liệu
+// require 'db_conn.php';
+
 
 // Thông tin kết nối cơ sở dữ liệu
-$servername = 'crm.adotech.vn';
-$username = 'xekhacha_xekhacha';
-$password = 'HOCGc1Y7M4Az';
-$dbname = 'xekhacha_db_crm';
+$servername = 'localhost';
+$username = 'root';
+$password = '';
+$dbname = 'db_crm';
 
-// Kết nối tới MySQL
+// Tạo kết nối
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Kiểm tra kết nối

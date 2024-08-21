@@ -1,16 +1,6 @@
 <?php
-$servername = 'localhost';
-$username = 'root';
-$password = '';
-$dbname = 'db_crm';
-
-// Tạo kết nối
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Kiểm tra kết nối
-if ($conn->connect_error) {
-    die('Kết nối cơ sở dữ liệu thất bại: ' . $conn->connect_error);
-}
+// Bao gồm file kết nối cơ sở dữ liệu
+require 'db_conn.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Lấy ID từ yêu cầu POST

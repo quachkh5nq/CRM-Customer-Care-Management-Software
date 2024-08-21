@@ -1,15 +1,8 @@
 <?php
-// Kết nối cơ sở dữ liệu
-$servername = 'localhost';
-$username = 'root';
-$password = '';
-$dbname = 'db_crm';
+// Bao gồm file kết nối cơ sở dữ liệu
+require 'db_conn.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
 
-if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
-}
 
 // Nhận dữ liệu từ form
 $id_khch = $_POST['id_khch'];

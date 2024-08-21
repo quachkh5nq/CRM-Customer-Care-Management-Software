@@ -167,19 +167,8 @@
             <div id="info" class="section hidden">
                 <h2>Thông Tin Chi Tiết Khách Hàng</h2>
                 <?php
-                // Thông tin k?t n?i co s? d? li?u
-                $servername = 'localhost';
-                $username = 'root';
-                $password = '';
-                $dbname = 'db_crm';
-
-                // T?o k?t n?i
-                $conn = new mysqli($servername, $username, $password, $dbname);
-
-                // Ki?m tra k?t n?i
-                if ($conn->connect_error) {
-                    die("Kết nối thất bại: " . $conn->connect_error);
-                }
+                // Bao gồm file kết nối cơ sở dữ liệu
+                require 'db_conn.php';
 
                 // L?y ID t? tham s? URL
                 $id = intval($_GET['id']);
@@ -455,7 +444,7 @@
             <div id="merge" class="section hidden">
                 <h2>Hợp Ðồng</h2>
                 <!-- Button để hiển thị form thêm mới hóa đơn -->
-                <button onclick="showAddMergeForm()" class="btn btn-primary mb-3">Thêm Mới Merge</button>
+                <button onclick="showAddMergeForm()" class="btn btn-primary mb-3">Thêm Mới Hợp Đồng</button>
 
                 <!-- Form thêm mới Merge -->
                 <div id="add-merge-form" style="display:none;">
@@ -463,12 +452,12 @@
                         <input type="hidden" name="Id_khachhang" id="Id_khachhang" value="<?php echo $id; ?>">
 
                         <div class="form-group">
-                            <label for="TenMerge">Tên Merge:</label>
+                            <label for="TenMerge">Tên Hợp Đồng:</label>
                             <input type="text" name="TenMerge" id="TenMerge" class="form-control" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="LoaiMerge">Loại Merge:</label>
+                            <label for="LoaiMerge">Loại Hợp Đồng:</label>
                             <select name="LoaiMerge" id="LoaiMerge" class="form-control" required>
                                 <?php
                                 // Kết nối cơ sở dữ liệu
@@ -505,7 +494,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="GiaTriMerge">Giá Trị Merge:</label>
+                            <label for="GiaTriMerge">Giá Trị Hợp Đồng:</label>
                             <input type="number" name="GiaTriMerge" id="GiaTriMerge" class="form-control" required>
                         </div>
 
@@ -520,7 +509,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="ChuKy">Chu Kỳ:</label>
+                            <label for="ChuKy">Chữ Ký:</label>
                             <input type="text" name="ChuKy" id="ChuKy" class="form-control" required>
                         </div>
 
@@ -562,12 +551,12 @@
             <thead>
                 <tr>
                     <th>STT</th>
-                    <th>Tên Merge</th>
-                    <th>Loại Merge</th>
+                    <th>Tên Hợp Đồng</th>
+                    <th>Loại Hợp Đồng</th>
                     <th>Giá Trị</th>
                     <th>Ngày Bắt Đầu</th>
                     <th>Ngày Kết Thúc</th>
-                    <th>Chu Kỳ</th>
+                    <th>Chữ Ký</th>
                     <th>Tùy Chỉnh</th>
                 </tr>
             </thead>

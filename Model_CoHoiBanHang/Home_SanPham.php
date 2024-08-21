@@ -288,6 +288,8 @@
                 </p>
                 <div id="submenu2" class="submenu2">
                     <p><a href="Home_SanPham.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Danh Sách Sản phẩm</a></p>
+                    <p><a href="Home_NhomSanPham.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Nhóm Sản Phẩm</a></p>
+                    <p><a href="Home_NhomDonVi.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Nhóm Đơn Vị</a></p>
                     <p><a href="#" style="text-decoration: none; color: black; height: 40px; margin-left: 60px;">Hóa Đơn</a></p>
                 </div>
             </div>
@@ -295,7 +297,8 @@
 
         <div class="content">
             <div class="button-container">
-                <button class="button" onclick="showModal()">
+
+                <button class="button" onclick="openModal()">
                     <i class="fas fa-plus"></i> Thêm Mới
                 </button>
 
@@ -308,235 +311,187 @@
                 </button>
 
                 <button class="button" onclick="printPage(); return false;">
-                    <i class="fas fa-print"></i> In Dữ Liệu
+                    <i class="fas fa-print"></i> In Danh Sách Sản Phẩm
                 </button>
                 <iframe id="print-frame" style="display:none;" src=""></iframe>
             </div>
 
-            <div>
-                <?php
-                // Thông tin kết nối cơ sở dữ liệu
-                $servername = 'localhost';
-                $username = 'root';
-                $password = '';
-                $dbname = 'db_crm';
 
-                // Tạo kết nối
-                $conn = new mysqli($servername, $username, $password, $dbname);
+            <!-- Modal -->
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h2>Thêm Mới Sản Phẩm</h2>
+                    <form id="addProductForm" action="add_product.php" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="TenSanPham" class="form-label">Tên Sản Phẩm</label>
+                            <input type="text" id="TenSanPham" name="TenSanPham" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="MoTa" class="form-label">Mô Tả</label>
+                            <textarea id="MoTa" name="MoTa" class="form-control" rows="4" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="Anh" class="form-label">Ảnh</label>
+                            <input type="file" id="Anh" name="Anh" class="form-control" accept="image/*" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="Gia" class="form-label">Giá</label>
+                            <input type="number" id="Gia" name="Gia" class="form-control" step="0.01" required>
+                        </div>
 
-                // Kiểm tra kết nối
-                if ($conn->connect_error) {
-                    die("Kết nối thất bại: " . $conn->connect_error);
-                }
-
-                // Truy vấn dữ liệu từ bảng sanpham
-                $sql = "SELECT Id_SanPham, TenSanPham, MoTa, Anh, Gia, DonViTien, ThuocNhom, DonVi, Kho FROM sanpham";
-                $result = $conn->query($sql);
-
-                // Kiểm tra và in ra dữ liệu
-                if ($result->num_rows > 0) {
-                    // In tiêu đề bảng
-                    echo "<table border='1'>";
-                    echo "<tr>
-                        <th>STT</th>
-                        <th>Tên Sản Phẩm</th>
-                        <th>Mô Tả</th>
-                        <th>Ảnh</th>
-                        <th>Giá</th>
-                        <th>Đơn Vị Tiền</th>
-                        <th>Thuộc Nhóm</th>
-                        <th>Đơn Vị</th>
-                        <th>Kho</th>
-                        </tr>";
-
-                    // In từng dòng dữ liệu
-                    $stt = 1;
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
-                        echo "<td>" . $stt++ . "</td>";
-                        echo "<td>" . $row["TenSanPham"] . "</td>";
-                        echo "<td>" . $row["MoTa"] . "</td>";
-                        echo "<td><img src='" . $row["Anh"] . "' alt='Ảnh sản phẩm' style='width: 100px; height: auto;'></td>";
-                        echo "<td>" . $row["Gia"] . "</td>";
-                        echo "<td>" . $row["DonViTien"] . "</td>";
-                        echo "<td>" . $row["ThuocNhom"] . "</td>";
-                        echo "<td>" . $row["DonVi"] . "</td>";
-                        echo "<td>" . $row["Kho"] . "</td>";
-                    
-                        echo "</tr>";
-                    }
-
-                    echo "</table>";
-                } else {
-                    echo "Không có dữ liệu.";
-                }
-
-                // Đóng kết nối
-                $conn->close();
-                ?>
-
-
-                <div id="myModal" class="modal">
-                    <div class="modal-content">
-                        <span class="close" onclick="closeModal()">&times;</span>
-                        <h2>Thêm Mới Khách Hàng</h2>
-                        <form id="addForm" action="add_khachhang.php" method="post">
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <div class="form-group">
-                                        <label for="name" class="form-label">Tên Khách Hàng</label>
-                                        <input type="text" id="name" name="name" class="form-control" required>
-
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="contact" class="form-label">Liên Hệ Chính</label>
-                                        <input type="text" id="contact" name="contact" class="form-control" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="website" class="form-label">Trang Web</label>
-                                        <input type="text" id="website" name="website" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="taxcode" class="form-label">Mã Số Thuế</label>
-                                        <input type="text" id="taxcode" name="taxcode" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="address" class="form-label">Địa Chỉ</label>
-                                        <input type="text" id="address" name="address" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="phone" class="form-label">Phone</label>
-                                        <input type="text" id="phone" name="phone" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-col">
-                                    <div class="form-group">
-                                        <label for="customer_group" class="form-label">Nhóm Khách Hàng</label>
-                                        <select id="customer_group" name="customer_group" class="form-control">
-                                            <option value="VIP">VIP</option>
-                                            <option value="Hài lòng">Hài lòng</option>
-                                            <option value="Không hài lòng">Không hài lòng</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="region" class="form-label">Khu Vực</label>
-                                        <select id="region" name="region" class="form-control">
-                                            <option value="Miền Nam">Miền Nam</option>
-                                            <option value="Miền Trung">Miền Trung</option>
-                                            <option value="Miền Bắc">Miền Bắc</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="currency" class="form-label">Đơn Vị Tiền</label>
-                                        <select id="currency" name="currency" class="form-control">
-                                            <option value="USD">USD</option>
-                                            <option value="VND">VND</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="establishment_date" class="form-label">Ngày Thành Lập</label>
-                                        <input type="date" id="establishment_date" name="establishment_date" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" id="email" name="email" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="status" class="form-label">Trạng Thái</label>
-                                        <select id="status" name="status" class="form-control">
-                                            <option value="Hoạt động">Hoạt động</option>
-                                            <option value="Không hoạt động">Không hoạt động</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="person_in_charge" class="form-label">Người Phụ Trách</label>
-                                        <select id="person_in_charge" name="person_in_charge" class="form-control">
-                                            <?php
-                                            // Kết nối đến cơ sở dữ liệu
-                                            $conn = new mysqli($servername, $username, $password, $dbname);
-
-                                            // Kiểm tra kết nối
-                                            if ($conn->connect_error) {
-                                                die("Kết nối thất bại: " . $conn->connect_error);
-                                            }
-
-                                            // Truy vấn dữ liệu từ bảng nhanvien
-                                            $sql = "SELECT HovaTen FROM nhanvien";
-                                            $result = $conn->query($sql);
-
-                                            // Kiểm tra và in ra dữ liệu
-                                            if ($result->num_rows > 0) {
-                                                // In từng tùy chọn
-                                                while ($row = $result->fetch_assoc()) {
-                                                    echo "<option value=\"" . $row["HovaTen"] . "\">" . $row["HovaTen"] . "</option>";
-                                                }
-                                            } else {
-                                                echo "<option value=\"\">Không có dữ liệu</option>";
-                                            }
-
-                                            // Đóng kết nối
-                                            $conn->close();
-                                            ?>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="created_date" class="form-label">Ngày Tạo</label>
-                                <input type="date" id="created_date" name="created_date" class="form-control">
-                            </div>
-                            <button type="submit" class="button">Thêm Mới</button>
-                        </form>
-                    </div>
+                        <div class="form-group">
+                            <label for="ThuocNhom" class="form-label">Thuộc Nhóm</label>
+                            <select id="ThuocNhom" name="ThuocNhom" class="form-control" required>
+                                <!-- Option will be filled by PHP -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="DonVi" class="form-label">Đơn Vị</label>
+                            <select id="DonVi" name="DonVi" class="form-control" required>
+                                <!-- Option will be filled by PHP -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="Kho" class="form-label">Kho</label>
+                            <input type="text" id="Kho" name="Kho" class="form-control" required>
+                        </div>
+                        <button type="submit" class="button">Lưu</button>
+                    </form>
                 </div>
-
-                <script>
-                    function showModal() {
-                        document.getElementById('myModal').style.display = 'block';
-                    }
-
-                    function closeModal() {
-                        document.getElementById('myModal').style.display = 'none';
-                    }
-
-                    function openModal() {
-                        document.getElementById('myModal').style.display = 'block';
-                    }
-
-                    function toggleSubMenu() {
-                        var submenu = document.getElementById('submenu');
-                        var toggleIcon = document.getElementById('toggle-icon');
-
-                        if (submenu.style.display === 'block') {
-                            submenu.style.display = 'none';
-                            toggleIcon.classList.remove('down');
-                        } else {
-                            submenu.style.display = 'block';
-                            toggleIcon.classList.add('down');
-                        }
-                    }
-
-                    function toggleSubMenu2() {
-                        var submenu = document.getElementById('submenu2');
-                        var toggleIcon = document.getElementById('toggle-icon2');
-
-                        if (submenu.style.display === 'block') {
-                            submenu.style.display = 'none';
-                            toggleIcon.classList.remove('down');
-                        } else {
-                            submenu.style.display = 'block';
-                            toggleIcon.classList.add('down');
-                        }
-                    }
-
-                    function deleteCustomer(id) {
-                        if (confirm("Bạn có chắc chắn muốn xóa khách hàng này?")) {
-                            // Gửi yêu cầu xóa đến server
-                            window.location.href = 'delete_khachhang.php?id=' + id;
-                        }
-                    }
-                </script>
             </div>
+
+
+            <div>
+                <form action="delete_products.php" method="post">
+                    <table border="1" cellpadding="10">
+                        <tr>
+                            <th>Chọn</th>
+                            <th>STT</th>
+                            <th>Tên Sản Phẩm</th>
+                            <th>Mô Tả</th>
+                            <th>Ảnh</th>
+                            <th>Giá</th>
+                            <th>Nhóm</th>
+                            <th>Đơn Vị</th>
+                            <th>Kho</th>
+                            <th>Tùy Chọn</th> <!-- Thêm cột Tùy Chọn -->
+                        </tr>
+                        <?php
+                        require 'db_conn.php'; // Đảm bảo đã có kết nối cơ sở dữ liệu
+
+                        $sql = "
+            SELECT 
+                s.Id_SanPham,
+                s.TenSanPham,
+                s.MoTa,
+                s.Anh,
+                s.Gia,
+                n.TenNhom AS TenNhom,
+                d.TenDonVi AS TenDonVi,
+                s.Kho
+            FROM 
+                sanpham s
+            JOIN 
+                nhomsanpham n ON s.ThuocNhom = n.Id_NhomSanPham
+            JOIN 
+                nhomdonvi d ON s.DonVi = d.Id_NhomDonVi
+        ";
+
+                        $result = $conn->query($sql);
+
+                        if ($result->num_rows > 0) {
+                            $stt = 1; // Khởi tạo số thứ tự
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<tr>";
+                                echo "<td><input type='checkbox' name='ids[]' value='" . $row['Id_SanPham'] . "'></td>";
+                                echo "<td>" . $stt . "</td>"; // Hiển thị STT
+                                echo "<td>" . $row['TenSanPham'] . "</td>";
+                                echo "<td>" . $row['MoTa'] . "</td>";
+                                echo "<td><img src='" . $row['Anh'] . "' alt='" . $row['TenSanPham'] . "' width='100'></td>";
+                                echo "<td>" . $row['Gia'] . "</td>";
+                                echo "<td>" . $row['TenNhom'] . "</td>";
+                                echo "<td>" . $row['TenDonVi'] . "</td>";
+                                echo "<td>" . $row['Kho'] . "</td>";
+                                echo "<td>
+                        <a href='edit_product_form.php?id=" . $row['Id_SanPham'] . "' class='btn btn-warning'>Chỉnh Sửa</a>
+                      </td>";
+                                echo "</tr>";
+                                $stt++;
+                            }
+                        } else {
+                            echo "<tr><td colspan='9'>Không có sản phẩm nào.</td></tr>";
+                        }
+
+                        $conn->close();
+                        ?>
+                    </table>
+                    <input type="submit" name="delete" value="Xóa Sản Phẩm">
+                </form>
+            </div>
+
+
+
+            <script>
+                function toggleSubMenu() {
+                    var submenu = document.getElementById('submenu');
+                    var toggleIcon = document.getElementById('toggle-icon');
+
+                    if (submenu.style.display === 'block') {
+                        submenu.style.display = 'none';
+                        toggleIcon.classList.remove('down');
+                    } else {
+                        submenu.style.display = 'block';
+                        toggleIcon.classList.add('down');
+                    }
+                }
+
+                function toggleSubMenu2() {
+                    var submenu = document.getElementById('submenu2');
+                    var toggleIcon = document.getElementById('toggle-icon2');
+
+                    if (submenu.style.display === 'block') {
+                        submenu.style.display = 'none';
+                        toggleIcon.classList.remove('down');
+                    } else {
+                        submenu.style.display = 'block';
+                        toggleIcon.classList.add('down');
+                    }
+                }
+
+                function openModal() {
+                    document.getElementById('myModal').style.display = 'block';
+                    loadDropdowns();
+                }
+
+                function closeModal() {
+                    document.getElementById('myModal').style.display = 'none';
+                }
+
+                function loadDropdowns() {
+                    fetch('get_dropdowns.php')
+                        .then(response => response.json())
+                        .then(data => {
+                            const thuocNhomSelect = document.getElementById('ThuocNhom');
+                            const donViSelect = document.getElementById('DonVi');
+
+                            data.thuocNhom.forEach(item => {
+                                const option = document.createElement('option');
+                                option.value = item.Id_NhomSanPham;
+                                option.text = item.TenNhom;
+                                thuocNhomSelect.appendChild(option);
+                            });
+
+                            data.donVi.forEach(item => {
+                                const option = document.createElement('option');
+                                option.value = item.Id_NhomDonVi;
+                                option.text = item.TenDonVi;
+                                donViSelect.appendChild(option);
+                            });
+                        });
+                }
+                
+            </script>
         </div>
 </body>
 

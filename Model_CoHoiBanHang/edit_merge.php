@@ -1,17 +1,6 @@
 <?php
-// Kết nối cơ sở dữ liệu
-$servername = 'localhost';
-$username = 'root';
-$password = '';
-$dbname = 'db_crm';
-
-// Kết nối cơ sở dữ liệu
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Kiểm tra kết nối
-if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
-}
+// Bao gồm file kết nối cơ sở dữ liệu
+require 'db_conn.php';
 
 // Lấy thông tin hợp đồng cần chỉnh sửa
 $idHopDong = isset($_GET['id']) ? intval($_GET['id']) : 0;

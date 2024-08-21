@@ -2,19 +2,8 @@
 // Lấy ID từ query string
 $id = $_GET['id'];
 
-// Thông tin kết nối cơ sở dữ liệu
-$servername = 'localhost';
-$username = 'root';
-$password = '';
-$dbname = 'db_crm';
-
-// Tạo kết nối
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Kiểm tra kết nối
-if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
-}
+// Bao gồm file kết nối cơ sở dữ liệu
+require 'db_conn.php';
 
 // Xóa khách hàng khỏi cơ sở dữ liệu
 $sql = "DELETE FROM khachhang WHERE Id_khachhang = ?";

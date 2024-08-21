@@ -209,17 +209,8 @@
 
             <div>
                 <?php
-                $servername = 'localhost';
-                $username = 'root';
-                $password = '';
-                $dbname = 'db_crm';
-
-                $conn = new mysqli($servername, $username, $password, $dbname);
-
-                if ($conn->connect_error) {
-                    echo json_encode(['status' => 'error', 'message' => 'Kết nối cơ sở dữ liệu thất bại.']);
-                    exit();
-                }
+                // Bao gồm file kết nối cơ sở dữ liệu
+                require 'db_conn.php';
 
                 $sql = "SELECT TieuDe, TinhTrangCoHoi, NguonCoHoi, NgayDuKien, GuiDen, HovaTen, TrangThai FROM lichcskh";
                 $result = $conn->query($sql);
@@ -312,12 +303,12 @@
         function loadSendToOptions() {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', 'get_send_to_options.php', true);
-            xhr.onload = function () {
+            xhr.onload = function() {
                 if (xhr.status === 200) {
                     var options = JSON.parse(xhr.responseText);
                     var select = document.getElementById('send-to');
                     select.innerHTML = '';
-                    options.forEach(function (option) {
+                    options.forEach(function(option) {
                         var opt = document.createElement('option');
                         opt.value = option.value;
                         opt.textContent = option.text;
@@ -331,12 +322,12 @@
         function loadInChargeOptions() {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', 'get_in_charge_options.php', true);
-            xhr.onload = function () {
+            xhr.onload = function() {
                 if (xhr.status === 200) {
                     var options = JSON.parse(xhr.responseText);
                     var select = document.getElementById('in-charge');
                     select.innerHTML = '';
-                    options.forEach(function (option) {
+                    options.forEach(function(option) {
                         var opt = document.createElement('option');
                         opt.value = option.value;
                         opt.textContent = option.text;
@@ -350,14 +341,14 @@
         function printPage() {
             var printFrame = document.getElementById('print-frame');
             printFrame.src = 'data:text/html,' + encodeURIComponent(document.querySelector('.content').innerHTML);
-            printFrame.onload = function () {
+            printFrame.onload = function() {
                 printFrame.contentWindow.focus();
                 printFrame.contentWindow.print();
             };
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('list-opportunities').addEventListener('click', function () {
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('list-opportunities').addEventListener('click', function() {
                 window.location.href = 'Home_CHBH.php';
             });
         });
