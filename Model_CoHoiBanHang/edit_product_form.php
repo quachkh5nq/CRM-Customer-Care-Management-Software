@@ -198,6 +198,7 @@ $conn->close();
 
             <div class="form-group">
                 <input type="submit" value="Cập Nhật Sản Phẩm" class="submit-btn">
+                
             </div>
         </form>
     </div>

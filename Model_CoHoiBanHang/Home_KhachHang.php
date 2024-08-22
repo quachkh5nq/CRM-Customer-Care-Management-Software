@@ -256,6 +256,64 @@
         .toggle-icon2.down {
             transform: rotate(90deg);
         }
+
+        /* Thêm CSS cho modal và thông báo */
+        .upload-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .upload-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .upload-close:hover,
+        .upload-close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .upload-form input[type="file"] {
+            margin: 10px 0;
+        }
+
+        .alert {
+            background-color: #f44336;
+            color: white;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .alert.success {
+            background-color: #4CAF50;
+        }
     </style>
 </head>
 
@@ -293,7 +351,7 @@
                     <p><a href="Home_SanPham.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Danh Sách Sản phẩm</a></p>
                     <p><a href="Home_NhomSanPham.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Nhóm Sản Phẩm</a></p>
                     <p><a href="Home_NhomDonVi.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Nhóm Đơn Vị</a></p>
-                    <p><a href="#" style="text-decoration: none; color: black; height: 40px; margin-left: 60px;">Hóa Đơn</a></p>
+                    <!-- <p><a href="#" style="text-decoration: none; color: black; height: 40px; margin-left: 60px;">Hóa Đơn</a></p> -->
                 </div>
             </div>
         </div>
@@ -304,15 +362,12 @@
                     <i class="fas fa-plus"></i> Thêm Mới
                 </button>
 
-                <button class="button" onclick="">
-                    <i class="fas fa-upload"></i> Nhập Từ File
-                </button>
 
-                <button class="button" onclick="window.location.href='#';">
+                <button class="button" onclick="window.location.href='export_kh.php';">
                     <i class="fas fa-file-export"></i> Xuất Excel
                 </button>
 
-                <button class="button" onclick="printPage(); return false;">
+                <button class="button" onclick="printPage1(); return false;">
                     <i class="fas fa-print"></i> In Dữ Liệu
                 </button>
                 <iframe id="print-frame" style="display:none;" src=""></iframe>
@@ -488,6 +543,24 @@
             </div>
 
             <script>
+                /*Xuất file */
+                function exportData(type) {
+                    let url = 'export.php?export=' + type;
+                    if (type === 'print') {
+                        window.open(url, '_blank');
+                    } else {
+                        window.location.href = url;
+                    }
+                }
+
+                function printPage1() {
+                    var frame = document.getElementById('print-frame');
+                    frame.src = 'print_report_KH.php'; // Đặt URL của trang in
+                    frame.onload = function() {
+                        frame.contentWindow.print(); // Gọi hàm in của frame khi tải xong
+                    };
+                }
+
                 function showModal() {
                     document.getElementById('myModal').style.display = 'block';
                 }

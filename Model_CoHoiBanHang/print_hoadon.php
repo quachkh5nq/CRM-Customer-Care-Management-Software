@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hóa Đơn Thanh Toán</title>
+    <title>Hóa Đơn Sản Phẩm</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,6 +12,7 @@
             padding: 0;
             background: #f5f5f5;
         }
+
         .invoice-box {
             max-width: 800px;
             margin: 30px auto;
@@ -19,57 +21,72 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
             background: #fff;
         }
+
         .invoice-box h1 {
             text-align: center;
             font-size: 24px;
             margin-bottom: 20px;
         }
+
         .invoice-box table {
             width: 100%;
             line-height: inherit;
             text-align: left;
             border-collapse: collapse;
         }
-        .invoice-box table th, .invoice-box table td {
+
+        .invoice-box table th,
+        .invoice-box table td {
             padding: 8px;
             vertical-align: top;
             border-bottom: 1px solid #ddd;
         }
+
         .invoice-box table th {
             background: #f7f7f7;
             font-weight: bold;
         }
+
         .invoice-box table td {
             text-align: right;
         }
-        .invoice-box table td:first-child, .invoice-box table th:first-child {
+
+        .invoice-box table td:first-child,
+        .invoice-box table th:first-child {
             text-align: left;
         }
+
         .invoice-box .total {
             font-weight: bold;
             border-top: 2px solid #eee;
         }
+
         .invoice-box .invoice-info {
             margin-bottom: 20px;
         }
+
         .invoice-box .invoice-info div {
             margin-bottom: 5px;
         }
+
         .summary {
             display: flex;
             justify-content: flex-end;
             align-items: center;
             margin-top: 20px;
         }
+
         .summary .label {
             font-size: 18px;
             font-weight: bold;
             margin-right: 10px;
         }
+
         .summary .value {
             font-size: 18px;
             color: #333;
         }
+
         .summary .value select {
             padding: 5px;
             font-size: 16px;
@@ -77,16 +94,19 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+
         .summary .value span {
             padding: 5px;
             font-size: 18px;
             font-weight: bold;
             color: #2c3e50;
         }
+
         .actions {
             text-align: center;
             margin-top: 20px;
         }
+
         .actions button {
             padding: 10px 20px;
             background-color: #4CAF50;
@@ -96,15 +116,18 @@
             border-radius: 5px;
             margin-right: 10px;
         }
+
         .actions button:hover {
             background-color: #45a049;
         }
+
         .search-bar {
             margin-bottom: 20px;
             display: flex;
             align-items: center;
             flex-wrap: wrap;
         }
+
         .search-bar input[type="text"] {
             padding: 10px;
             font-size: 16px;
@@ -114,6 +137,7 @@
             max-width: 300px;
             margin-right: 10px;
         }
+
         .search-bar button {
             padding: 10px 20px;
             background-color: #2196F3;
@@ -122,15 +146,18 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
         .search-bar button:hover {
             background-color: #1e88e5;
         }
+
         .select-buttons {
             margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
         }
+
         .select-buttons button {
             padding: 10px 20px;
             background-color: #FFC107;
@@ -140,22 +167,53 @@
             cursor: pointer;
             margin-bottom: 10px;
         }
+
         .select-buttons button:hover {
             background-color: #ffb300;
         }
+
         @media print {
-            .invoice-box table td, .invoice-box table th {
+
+            .invoice-box table td,
+            .invoice-box table th {
                 font-size: 12px;
             }
-            .summary, .search-bar, .select-buttons, .actions {
+
+            .summary,
+            .search-bar,
+            .select-buttons,
+            .actions {
                 display: none;
             }
         }
+
+        .invoice-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .invoice-header img {
+            max-width: 150px;
+            /* Tăng kích thước tối đa của logo */
+        }
+
+        .invoice-header h1 {
+            font-size: 24px;
+            margin: 0;
+            text-align: center;
+            flex-grow: 1;
+        }
     </style>
 </head>
+
 <body>
     <div class="invoice-box">
-        <h1>HÓA ĐƠN THANH TOÁN</h1>
+        <div class="invoice-header">
+            <img src="img/Logo/adotech.png" alt="Logo Adotech">
+            <h1>Hóa Đơn Sản Phẩm</h1>
+        </div>
 
         <div class="invoice-info">
             <div><strong>Cửa Hàng:</strong> Adotech</div>
@@ -192,13 +250,13 @@
                 $result = $conn->query($sql);
 
                 if ($result->num_rows > 0) {
-                    while($row = $result->fetch_assoc()) {
+                    while ($row = $result->fetch_assoc()) {
                         echo '<tr>';
                         echo '<td><input type="checkbox" class="product-checkbox" onchange="calculateTotal();"></td>';
                         echo '<td>' . $row['TenSanPham'] . '</td>';
                         echo '<td><input type="number" class="quantity" value="1" min="1" data-price="' . $row['Gia'] . '" style="width: 50px;" onchange="calculateTotal();"></td>';
-                        echo '<td>' . number_format($row['Gia'], 0, ',', '.') . ' VND</td>';
-                        echo '<td class="total-price">' . number_format($row['Gia'], 0, ',', '.') . ' VND</td>';
+                        echo '<td>' . number_format($row['Gia'], 0, ',', '.') . ' </td>';
+                        echo '<td class="total-price">' . number_format($row['Gia'], 0, ',', '.') . ' </td>';
                         echo '</tr>';
                     }
                 } else {
@@ -266,7 +324,10 @@
             let originalContent = document.body.innerHTML;
             let printContent = '<html><head><style>@media print { .invoice-box .actions, .invoice-box .search-bar, .invoice-box .select-buttons { display: none; } }</style></head><body>';
             printContent += '<div class="invoice-box">';
-            printContent += '<h1>HÓA ĐƠN THANH TOÁN</h1>';
+            printContent += '<div class="invoice-header">';
+            printContent += '<img src="img/Logo/adotech.png" alt="Adotech Logo" style="max-width: 150px;">'; // Thêm hình ảnh logo ở đây
+            printContent += '<h1>Hóa Đơn Sản Phẩm</h1>';
+            printContent += '</div>';
             printContent += document.querySelector('.invoice-info').outerHTML;
             printContent += '<table><thead><tr><th>Sản Phẩm</th><th>Số Lượng</th><th>Đơn Giá</th><th>Thành Tiền</th></tr></thead><tbody>';
 
@@ -280,8 +341,8 @@
                 printContent += '<tr>';
                 printContent += '<td>' + productName + '</td>';
                 printContent += '<td>' + quantity + '</td>';
-                printContent += '<td>' + parseFloat(price).toFixed(0).replace(/\d(?=(?:\d{3})+(?!\d))/g, '$&,') + ' VND</td>';
-                printContent += '<td>' + totalPrice + ' VND</td>';
+                printContent += '<td>' + parseFloat(price).toFixed(0).replace(/\d(?=(?:\d{3})+(?!\d))/g, '$&,') + '</td>';
+                printContent += '<td>' + totalPrice + '</td>';
                 printContent += '</tr>';
             });
 
@@ -328,4 +389,5 @@
         }
     </script>
 </body>
+
 </html>

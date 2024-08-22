@@ -290,7 +290,7 @@
                     <p><a href="Home_SanPham.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Danh Sách Sản phẩm</a></p>
                     <p><a href="Home_NhomSanPham.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Nhóm Sản Phẩm</a></p>
                     <p><a href="Home_NhomDonVi.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Nhóm Đơn Vị</a></p>
-                    <p><a href="#" style="text-decoration: none; color: black; height: 40px; margin-left: 60px;">Hóa Đơn</a></p>
+                    <!-- <p><a href="#" style="text-decoration: none; color: black; height: 40px; margin-left: 60px;">Hóa Đơn</a></p> -->
                 </div>
             </div>
         </div>
@@ -302,18 +302,34 @@
                     <i class="fas fa-plus"></i> Thêm Mới
                 </button>
 
-                <button class="button" onclick="">
+                <button class="button" onclick="showUploadModal()">
                     <i class="fas fa-upload"></i> Nhập Từ File
                 </button>
 
-                <button class="button" onclick="window.location.href='#';">
+                <button class="button" onclick="window.location.href='export_sp.php';">
                     <i class="fas fa-file-export"></i> Xuất Excel
                 </button>
 
-                <button class="button" onclick="printPage(); return false;">
-                    <i class="fas fa-print"></i> In Danh Sách Sản Phẩm
+                <button class="button" onclick="window.location.href='print_hoadon.php'; return false;">
+                    <i class="fas fa-print"></i> In Hóa Đơn Sản Phẩm
                 </button>
+
                 <iframe id="print-frame" style="display:none;" src=""></iframe>
+            </div>
+
+            <!-- Modal -->
+            <div id="uploadModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center;">
+                <div style="background-color: white; padding: 20px; border-radius: 5px; width: 400px; max-width: 100%;">
+                    <h2>Nhập File</h2>
+                    <form id="uploadForm">
+                        <div style="margin-bottom: 15px;">
+                            <label for="fileInput">Chọn file:</label>
+                            <input type="file" id="fileInput" name="uploadedFile" required>
+                        </div>
+                        <button type="submit">Tải lên</button>
+                        <button type="button" onclick="closeUploadModal()">Hủy</button>
+                    </form>
+                </div>
             </div>
 
 
@@ -432,7 +448,19 @@
 
 
 
+
+
             <script>
+                /*Xuất file */
+                function exportData(type) {
+                    let url = 'export.php?export=' + type;
+                    if (type === 'print') {
+                        window.open(url, '_blank');
+                    } else {
+                        window.location.href = url;
+                    }
+                }
+
                 function toggleSubMenu() {
                     var submenu = document.getElementById('submenu');
                     var toggleIcon = document.getElementById('toggle-icon');
@@ -490,7 +518,46 @@
                             });
                         });
                 }
-                
+
+                function showUploadModal() {
+                    document.getElementById('uploadModal').style.display = 'flex';
+                }
+
+                function closeUploadModal() {
+                    document.getElementById('uploadModal').style.display = 'none';
+                }
+
+                $(document).ready(function() {
+                    $('#uploadForm').on('submit', function(event) {
+                        event.preventDefault(); // Ngăn chặn gửi form theo cách truyền thống
+
+                        var formData = new FormData(this);
+
+                        $.ajax({
+                            url: 'upload_file_sp.php', // Đường dẫn đến tập tin xử lý upload
+                            type: 'POST',
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function(response) {
+                                var result = JSON.parse(response);
+                                if (result.status === 'success') {
+                                    toastr.success(result.message);
+                                } else {
+                                    toastr.error(result.message);
+                                }
+                                // Đóng modal và quay lại trang chủ sau một thời gian ngắn
+                                setTimeout(function() {
+                                    closeUploadModal();
+                                    location.reload(); // Tải lại trang để cập nhật dữ liệu
+                                }, 2000);
+                            },
+                            error: function() {
+                                toastr.error('Đã xảy ra lỗi khi gửi yêu cầu.');
+                            }
+                        });
+                    });
+                });
             </script>
         </div>
 </body>
