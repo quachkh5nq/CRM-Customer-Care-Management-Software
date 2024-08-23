@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-    <title>Lịch Chăm Sóc</title>
+    <title>Danh Sách Sản Phẩm</title>
 
     <style>
         body {
@@ -16,8 +16,6 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
-            display: flex;
-            overflow: hidden;
         }
 
         .container {
@@ -88,8 +86,8 @@
             color: white;
             text-align: center;
             padding: 1px;
-            border-radius: 5px;
             margin: -20px -20px 20px -20px;
+            border-radius: 5px;
         }
 
         .button {
@@ -143,15 +141,28 @@
             align-items: center;
         }
 
-        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding-top: 60px;
+        }
+
         .modal-content {
             background-color: #fff;
-            margin: 15% auto;
+            margin: 5% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
-            max-width: 600px;
-            border-radius: 5px;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
         }
 
         .close {
@@ -168,24 +179,51 @@
             cursor: pointer;
         }
 
-        /* Các style khác */
-        .action-buttons {
-            display: none;
-            position: absolute;
-            background-color: #fff;
+        /* Add some basic styling here */
+        h2 {
+            margin-top: 0;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
             border: 1px solid #ddd;
-            padding: 5px;
             border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            z-index: 10;
+            box-sizing: border-box;
         }
 
-        tr:hover .action-buttons {
-            display: inline-block;
+        .form-group {
+            margin-bottom: 15px;
         }
 
-        .table-container {
-            position: relative;
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .form-col {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .customer-link {
+            color: black;
+            /* Thay đổi màu chữ liên kết */
+            text-decoration: none;
+            /* Bỏ gạch dưới liên kết */
+        }
+
+        .customer-link:hover {
+            color: #007bff;
+            /* Màu chữ khi di chuột qua liên kết, tùy chọn */
         }
 
         .submenu2 {
@@ -284,6 +322,7 @@
                 </div>
             </div>
 
+
             <div style="text-align: left; margin-top: 20px;">
                 <p>
                     <a href="javascript:void(0);" style="text-decoration: none; color: black;" onclick="toggleSubMenu3()">
@@ -302,238 +341,172 @@
 
         <div class="content">
             <div class="button-container">
-                <button class="button" onclick="showModal()">
+
+                <button class="button" onclick="window.location.href='Insert_CongViec.php';">
                     <i class="fas fa-plus"></i> Thêm Mới
                 </button>
 
-                <button class="button" onclick="window.location.href='export_lichcskh.php';">
-                    <i class="fas fa-file-export"></i> Xuất Excel
+                <button class="button" onclick="showUploadModal()">
+                    <i class="fas fa-upload"></i> Nhập Từ File
                 </button>
 
-                <button class="button" onclick="printPage(); return false;">
-                    <i class="fas fa-print"></i> In Dữ Liệu
-                </button>
-                <iframe id="print-frame" style="display:none;" src=""></iframe>
+
             </div>
+
+
 
             <div>
                 <?php
                 // Bao gồm file kết nối cơ sở dữ liệu
                 require 'db_conn.php';
 
-                $sql = "SELECT ID_LichCSKH, TieuDe, TinhTrangCoHoi, NguonCoHoi, NgayDuKien, GuiDen, HovaTen, TrangThai FROM lichcskh";
+                // Truy vấn dữ liệu từ bảng congviec
+                $sql = "SELECT Id_CongViec, TenCongViec, MoTaCongViec, NgayBatDau, NgayKetThuc, LienQuanDen, TinhTrang, NguoiThucHien, MucDo FROM congviec";
                 $result = $conn->query($sql);
 
+                // Kiểm tra và hiển thị dữ liệu
                 if ($result->num_rows > 0) {
-                    echo "<table>
-        <tr>
-            <th>STT</th>
-            <th>Tiêu Đề</th>
-            <th>Tình Trạng</th>
-            <th>Nguồn Cơ hội</th>
-            <th>Ngày Chăm Sóc</th>
-            <th>Gửi Đến</th>
-            <th>Phụ Trách</th>
-            <th>Trạng Thái</th>
-        </tr>";
+                    echo "<table>";
+                    echo "<tr>
+                <th>STT</th>
+                <th>Tên Công Việc</th>
+                <th>Mô Tả Công Việc</th>
+                <th>Ngày Bắt Đầu</th>
+                <th>Ngày Kết Thúc</th>
+                <th>Liên Quan Đến</th>
+                <th>Tình Trạng</th>
+                <th>Người Thực Hiện</th>
+                <th>Mức Độ</th>
+                <th>Hành Động</th>
+            </tr>";
+
+                    // Lặp qua từng dòng kết quả
                     $stt = 1;
                     while ($row = $result->fetch_assoc()) {
-                        echo "<tr class='row'>
-        <td>" . $stt . "</td>
-        <td>" . $row["TieuDe"] . "
-            <div class='actions'>
-                <button onclick='editRecord(" . $row["ID_LichCSKH"] . ")'>Sửa</button>
-                <button onclick='deleteOpportunity(" . $row["ID_LichCSKH"] . ")'>Xóa</button>
-            </div>
-        </td>
-        <td>" . $row["TinhTrangCoHoi"] . "</td>
-        <td>" . $row["NguonCoHoi"] . "</td>
-        <td>" . $row["NgayDuKien"] . "</td>
-        <td>" . $row["GuiDen"] . "</td>
-        <td>" . $row["HovaTen"] . "</td>
-        <td>" . $row["TrangThai"] . "</td>
-    </tr>";
-                        $stt++;
+                        echo "<tr class='data-row'>";
+                        echo "<td>" . $stt++ . "</td>";
+                        echo "<td>" . $row["TenCongViec"] . "</td>";
+                        echo "<td>" . $row["MoTaCongViec"] . "</td>";
+                        echo "<td>" . $row["NgayBatDau"] . "</td>";
+                        echo "<td>" . $row["NgayKetThuc"] . "</td>";
+                        echo "<td>" . $row["LienQuanDen"] . "</td>";
+                        echo "<td>" . $row["TinhTrang"] . "</td>";
+                        echo "<td>" . $row["NguoiThucHien"] . "</td>";
+                        echo "<td>" . $row["MucDo"] . "</td>";
+                        echo "<td>
+                    <span class='action-buttons'>
+                        <button class='action-button delete' data-id='" . $row["Id_CongViec"] . "'>Xóa</button>
+                        <button class='action-button edit' data-id='" . $row["Id_CongViec"] . "'>Chỉnh sửa</button>
+                    </span>
+                  </td>";
+                        echo "</tr>";
                     }
                     echo "</table>";
                 } else {
-                    echo "Không có dữ liệu.";
+                    echo "Không có dữ liệu nào.";
                 }
 
+                // Đóng kết nối
                 $conn->close();
                 ?>
             </div>
-        </div>
-    </div>
 
-    <div id="add-new-modal" style="display:none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Thêm Mới Cơ Hội</h2>
-            <form id="add-new-form" method="POST" action="add_new_opportunity.php">
-                <label for="title">Tiêu Đề:</label>
-                <input type="text" id="title" name="title" required><br><br>
 
-                <label for="status">Tình Trạng Cơ Hội:</label>
-                <input type="text" id="status" name="status" required><br><br>
 
-                <label for="source">Nguồn Cơ Hội:</label>
-                <input type="text" id="source" name="source" required><br><br>
 
-                <label for="expected-date">Ngày Dự Kiến:</label>
-                <input type="date" id="expected-date" name="expected-date" required><br><br>
 
-                <label for="send-to">Gửi Đến:</label>
-                <select id="send-to" name="send-to[]" multiple style="width: 100%; height: 100px;">
-                    <!-- Options will be populated by JavaScript -->
-                </select><br><br>
+            <script>
+                function toggleSubMenu() {
+                    var submenu = document.getElementById('submenu');
+                    var toggleIcon = document.getElementById('toggle-icon');
 
-                <label for="in-charge">Phụ Trách:</label>
-                <select id="in-charge" name="in-charge" style="width: 100%;">
-                    <!-- Options will be populated by JavaScript -->
-                </select><br><br>
-
-                <label for="status">Trạng Thái:</label>
-                <input type="text" id="status" name="status" required><br><br>
-
-                <button type="submit">Lưu</button>
-                <button type="button" onclick="closeModal()">Hủy</button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        function showModal() {
-            document.getElementById('add-new-modal').style.display = 'block';
-            loadSendToOptions();
-            loadInChargeOptions();
-        }
-        /*Xuất file */
-        function exportData(type) {
-            let url = 'export.php?export=' + type;
-            if (type === 'print') {
-                window.open(url, '_blank');
-            } else {
-                window.location.href = url;
-            }
-        }
-
-        function closeModal() {
-            document.getElementById('add-new-modal').style.display = 'none';
-        }
-
-        function loadSendToOptions() {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'get_send_to_options.php', true);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    var options = JSON.parse(xhr.responseText);
-                    var select = document.getElementById('send-to');
-                    select.innerHTML = '';
-                    options.forEach(function(option) {
-                        var opt = document.createElement('option');
-                        opt.value = option.value;
-                        opt.textContent = option.text;
-                        select.appendChild(opt);
-                    });
-                }
-            };
-            xhr.send();
-        }
-
-        function loadInChargeOptions() {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'get_in_charge_options.php', true);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    var options = JSON.parse(xhr.responseText);
-                    var select = document.getElementById('in-charge');
-                    select.innerHTML = '';
-                    options.forEach(function(option) {
-                        var opt = document.createElement('option');
-                        opt.value = option.value;
-                        opt.textContent = option.text;
-                        select.appendChild(opt);
-                    });
-                }
-            };
-            xhr.send();
-        }
-
-        function printPage() {
-            var frame = document.getElementById('print-frame');
-            frame.src = 'print_reportlichcskh.php'; // Đặt URL của trang in
-            frame.onload = function() {
-                frame.contentWindow.print(); // Gọi hàm in của frame khi tải xong
-            };
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('list-opportunities').addEventListener('click', function() {
-                window.location.href = 'Home_CHBH.php';
-            });
-        });
-
-        function toggleSubMenu() {
-            var submenu = document.getElementById('submenu');
-            var icon = document.getElementById('toggle-icon');
-            if (submenu.style.display === 'none' || submenu.style.display === '') {
-                submenu.style.display = 'block';
-                icon.classList.add('down');
-            } else {
-                submenu.style.display = 'none';
-                icon.classList.remove('down');
-            }
-        }
-
-        function toggleSubMenu2() {
-            var submenu = document.getElementById('submenu2');
-            var toggleIcon = document.getElementById('toggle-icon2');
-
-            if (submenu.style.display === 'block') {
-                submenu.style.display = 'none';
-                toggleIcon.classList.remove('down');
-            } else {
-                submenu.style.display = 'block';
-                toggleIcon.classList.add('down');
-            }
-        }
-
-        function toggleSubMenu3() {
-            var submenu = document.getElementById('submenu3');
-            var toggleIcon = document.getElementById('toggle-icon3');
-
-            if (submenu.style.display === 'block') {
-                submenu.style.display = 'none';
-                toggleIcon.classList.remove('down');
-            } else {
-                submenu.style.display = 'block';
-                toggleIcon.classList.add('down');
-            }
-        }
-
-        function editRecord(id) {
-            // Hiển thị modal hoặc chuyển hướng đến trang chỉnh sửa
-            window.location.href = 'edit_opportunity.php?id=' + id;
-        }
-
-        function deleteOpportunity(id) {
-            if (confirm('Bạn có chắc chắn muốn xóa cơ hội này?')) {
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'delete_opportunity.php', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        // Xóa thành công, làm mới trang
-                        window.location.href = 'Home_LichCSKH.php';
+                    if (submenu.style.display === 'block') {
+                        submenu.style.display = 'none';
+                        toggleIcon.classList.remove('down');
                     } else {
-                        alert('Lỗi khi xóa: ' + xhr.responseText);
+                        submenu.style.display = 'block';
+                        toggleIcon.classList.add('down');
                     }
-                };
-                xhr.send('ID_LichCSKH=' + encodeURIComponent(id));
-            }
-        }
-    </script>
+                }
+
+                function toggleSubMenu2() {
+                    var submenu = document.getElementById('submenu2');
+                    var toggleIcon = document.getElementById('toggle-icon2');
+
+                    if (submenu.style.display === 'block') {
+                        submenu.style.display = 'none';
+                        toggleIcon.classList.remove('down');
+                    } else {
+                        submenu.style.display = 'block';
+                        toggleIcon.classList.add('down');
+                    }
+                }
+
+                function toggleSubMenu3() {
+                    var submenu = document.getElementById('submenu3');
+                    var toggleIcon = document.getElementById('toggle-icon3');
+
+                    if (submenu.style.display === 'block') {
+                        submenu.style.display = 'none';
+                        toggleIcon.classList.remove('down');
+                    } else {
+                        submenu.style.display = 'block';
+                        toggleIcon.classList.add('down');
+                    }
+                }
+
+                function openModal() {
+                    document.getElementById('myModal').style.display = 'block';
+                    loadDropdowns();
+                }
+
+                function closeModal() {
+                    document.getElementById('myModal').style.display = 'none';
+                }
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Xóa công việc
+                    document.querySelectorAll('.action-button.delete').forEach(function(button) {
+                        button.addEventListener('click', function() {
+                            if (confirm('Bạn có chắc chắn muốn xóa công việc này?')) {
+                                let idCongViec = this.getAttribute('data-id');
+                                fetch('Delete_CongViec.php', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/x-www-form-urlencoded'
+                                        },
+                                        body: 'idCongViec=' + encodeURIComponent(idCongViec)
+                                    })
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Network response was not ok');
+                                        }
+                                        return response.text();
+                                    })
+                                    .then(result => {
+                                        alert('Công việc đã được xóa thành công.');
+                                        // Tải lại trang để cập nhật danh sách công việc
+                                        window.location.reload();
+                                    })
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                                        alert('Đã xảy ra lỗi khi xóa công việc.');
+                                    });
+                            }
+                        });
+                    });
+
+
+                    // Chỉnh sửa công việc
+                    document.querySelectorAll('.action-button.edit').forEach(function(button) {
+                        button.addEventListener('click', function() {
+                            let idCongViec = this.getAttribute('data-id');
+                            window.location.href = 'Edit_CongViec.php?idCongViec=' + encodeURIComponent(idCongViec);
+                        });
+                    });
+                });
+            </script>
+        </div>
 </body>
 
 </html>

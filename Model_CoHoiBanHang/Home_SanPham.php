@@ -253,6 +253,34 @@
         .toggle-icon2.down {
             transform: rotate(90deg);
         }
+
+        .submenu3 {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .submenu3 p {
+            margin: 0;
+        }
+
+        .submenu3 a {
+            display: block;
+            padding: 5px 0;
+            text-decoration: none;
+            color: black;
+        }
+
+        .submenu3 a:hover {
+            color: #007bff;
+        }
+
+        .toggle-icon3 {
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-icon3.down {
+            transform: rotate(90deg);
+        }
     </style>
 </head>
 
@@ -291,6 +319,22 @@
                     <p><a href="Home_NhomSanPham.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Nhóm Sản Phẩm</a></p>
                     <p><a href="Home_NhomDonVi.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Nhóm Đơn Vị</a></p>
                     <!-- <p><a href="#" style="text-decoration: none; color: black; height: 40px; margin-left: 60px;">Hóa Đơn</a></p> -->
+                </div>
+            </div>
+
+
+            <div style="text-align: left; margin-top: 20px;">
+                <p>
+                    <a href="javascript:void(0);" style="text-decoration: none; color: black;" onclick="toggleSubMenu3()">
+                        <img src="icon/briefcase.png" alt="Icon Sản phẩm" style="width: 20px; height: 20px; margin-right: 10px;">
+                        Công Việc
+                        <i id="toggle-icon3" class="fas fa-chevron-right toggle-icon2" style="width: 10px; height: 10px; margin-left: 145px;"></i>
+                    </a>
+                </p>
+                <div id="submenu3" class="submenu3">
+                    <p><a href="Home_CongViec.php" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Danh Sách Công Việc</a></p>
+                    <p><a href="#" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Dự Án</a></p>
+                    <p><a href="#" style="text-decoration: none; color: black; height: 20px; margin-left: 60px;">Hỗ Trợ Khách Hàng</a></p>
                 </div>
             </div>
         </div>
@@ -477,6 +521,19 @@
                 function toggleSubMenu2() {
                     var submenu = document.getElementById('submenu2');
                     var toggleIcon = document.getElementById('toggle-icon2');
+
+                    if (submenu.style.display === 'block') {
+                        submenu.style.display = 'none';
+                        toggleIcon.classList.remove('down');
+                    } else {
+                        submenu.style.display = 'block';
+                        toggleIcon.classList.add('down');
+                    }
+                }
+
+                function toggleSubMenu3() {
+                    var submenu = document.getElementById('submenu3');
+                    var toggleIcon = document.getElementById('toggle-icon3');
 
                     if (submenu.style.display === 'block') {
                         submenu.style.display = 'none';
