@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-    <title>Danh Sách Sản Phẩm</title>
+    <title>Danh Sách Công Việc</title>
 
     <style>
         body {
@@ -281,6 +281,94 @@
         .toggle-icon3.down {
             transform: rotate(90deg);
         }
+
+        /* Form heading */
+        .modal-content h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        /* Close button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Form group */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        /* Input styles */
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        /* Button styles */
+        .button-primary {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .button-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
     </style>
 </head>
 
@@ -353,6 +441,25 @@
 
             </div>
 
+            <!-- Modal thêm nhóm liên quan -->
+            <!-- Modal thêm nhóm liên quan -->
+            <div id="uploadModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeUploadModal()">&times;</span>
+                    <h2>Thêm Nhóm Liên Quan</h2>
+                    <form id="uploadForm" action="upload_lienquanden.php" method="POST">
+                        <div class="form-group">
+                            <label for="TenLienQuanDen">Tên Nhóm Liên Quan:</label>
+                            <input type="text" id="TenLienQuanDen" name="TenLienQuanDen" class="form-control" placeholder="Nhập tên nhóm liên quan" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">Thêm</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeUploadModal()">Hủy</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
 
 
             <div>
@@ -385,7 +492,8 @@
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr class='data-row'>";
                         echo "<td>" . $stt++ . "</td>";
-                        echo "<td>" . $row["TenCongViec"] . "</td>";
+                        echo "<td><a href='CT_CongViec.php?Id_CongViec=" . $row['Id_CongViec'] . "' style='color: black; text-decoration: none;'>" . $row['TenCongViec'] . "</a></td>";
+
                         echo "<td>" . $row["MoTaCongViec"] . "</td>";
                         echo "<td>" . $row["NgayBatDau"] . "</td>";
                         echo "<td>" . $row["NgayKetThuc"] . "</td>";
@@ -505,6 +613,24 @@
                         });
                     });
                 });
+
+                // Hiển thị modal
+                function showUploadModal() {
+                    document.getElementById("uploadModal").style.display = "block";
+                }
+
+                // Đóng modal
+                function closeUploadModal() {
+                    document.getElementById("uploadModal").style.display = "none";
+                }
+
+                // Đóng modal khi người dùng nhấn ra ngoài
+                window.onclick = function(event) {
+                    var modal = document.getElementById("uploadModal");
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
             </script>
         </div>
 </body>
