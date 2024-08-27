@@ -347,7 +347,7 @@
                 </button>
 
                 <button class="button" onclick="showUploadModal()">
-                    <i class="fas fa-upload"></i> Nhập Từ File
+                    <i class="fas fa-upload"></i> Thêm Nhóm Liên Quan
                 </button>
 
 
